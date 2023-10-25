@@ -84,6 +84,32 @@ For example, if you press `&mt LEFT_SHIFT A` and then release it without pressin
 };
 ```
 
+To define a behavior to use instead of the tap behavior, include `retro-tap-behavior`, `retro-tap-param1`, and/or `retro-tap-param2` in your hold-tap definition.
+
+- `retro-tap-behavior` refers to the label string of the desired behavior. See below for a list of these label strings for built-in behaviors.
+- `retro-tap-param1` refers to the first thing that comes after the behavior in your keymap. e.g. for `&mt LSHFT A`, LSHFT will be param1.
+- `retro-tap-param2` refers to the second thing that comes after the behavior in your keymap. e.g. for `&mt LSHFT A`, A will be param2.
+
+List of built-in behaviors and their corresponding label strings:
+
+- &bl - "BCKLGHT"
+- &bt - "BLUETOOTH"
+- &caps_word - "CAPS_WORD"
+- &ext_power - "EXTPOWER"
+- &gresc - "GRAVE_ESCAPE"
+- &kp - "KEY_PRESS"
+- &key_repeat - "KEY_REPEAT"
+- &none - "NONE"
+- &out - "OUTPUTS"
+- &reset - "RESET"
+- &bootloader - "BOOTLOAD"
+- &rgb_ug - "RGB_UG"
+- &sk - "STICKY_KEY"
+- &sl - "STICKY_LAYER"
+- &to - "TO_LAYER"
+- &tog - "TOGGLE_LAYER"
+- &trans - "TRANS"
+
 #### Positional hold-tap and `hold-trigger-key-positions`
 
 Including `hold-trigger-key-positions` in your hold-tap definition turns on the positional hold-tap feature. With positional hold-tap enabled, if you press any key **NOT** listed in `hold-trigger-key-positions` before `tapping-term-ms` expires, it will produce a tap.
