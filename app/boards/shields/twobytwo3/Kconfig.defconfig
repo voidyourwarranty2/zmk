@@ -1,0 +1,19 @@
+if SHIELD_TWOBYTWO3_RIGHT
+
+config ZMK_KEYBOARD_NAME
+  default "Two By Two"
+
+config ZMK_SPLIT_ROLE_CENTRAL
+  default y
+
+endif
+
+if SHIELD_TWOBYTWO3_RIGHT || SHIELD_TWOBYTWO3_LEFT
+
+config ZMK_SPLIT
+  default y
+
+config I2C
+  default y
+
+endif

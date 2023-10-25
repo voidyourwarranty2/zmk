@@ -1,0 +1,23 @@
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>   // this is required when I want to issue &bt commands.
+
+/ {
+  keymap {
+    compatible = "zmk,keymap";
+
+  default_layer {
+
+// +-----+-----+-----+   +-----+-----+-----+
+// |  A  |  B  |  C  |   |  D  |  E  |  F  |
+// +-----+-----+-----+   +-----+-----+-----+
+// |        G        |   |        H        |
+// +-----------------+   +-----------------+
+
+    bindings = <
+           &kp A   &kp B   &kp C   &kp D   &kp E    &kp F
+                   &kp G                   &kp H
+      >;
+    };
+  };
+};

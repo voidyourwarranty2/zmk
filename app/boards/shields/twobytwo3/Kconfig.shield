@@ -1,0 +1,16 @@
+#
+# Configuration that defines the shield.
+#
+
+config SHIELD_TWOBYTWO3
+  def_bool $(shields_list_contains,twobytwo3)
+
+config SHIELD_TWOBYTWO3_LEFT
+  def_bool $(shields_list_contains,twobytwo3_left)
+
+config SHIELD_TWOBYTWO3_RIGHT
+  def_bool $(shields_list_contains,twobytwo3_right)
+
+#
+# End of file.
+#
