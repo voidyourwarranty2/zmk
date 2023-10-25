@@ -252,6 +252,16 @@ void zmk_hid_mouse_movement_update(int16_t x, int16_t y);
 void zmk_hid_mouse_scroll_update(int8_t x, int8_t y);
 void zmk_hid_mouse_clear();
 
+int zmk_hid_mouse_button_press(zmk_mouse_button_t button);
+int zmk_hid_mouse_button_release(zmk_mouse_button_t button);
+int zmk_hid_mouse_buttons_press(zmk_mouse_button_flags_t buttons);
+int zmk_hid_mouse_buttons_release(zmk_mouse_button_flags_t buttons);
+void zmk_hid_mouse_movement_set(int16_t x, int16_t y);
+void zmk_hid_mouse_scroll_set(int8_t x, int8_t y);
+void zmk_hid_mouse_movement_update(int16_t x, int16_t y);
+void zmk_hid_mouse_scroll_update(int8_t x, int8_t y);
+void zmk_hid_mouse_clear();
+
 struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report();
 struct zmk_hid_consumer_report *zmk_hid_get_consumer_report();
 struct zmk_hid_mouse_report *zmk_hid_get_mouse_report();
