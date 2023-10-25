@@ -1,0 +1,15 @@
+#include "yackboard-v1.dtsi"
+
+&default_transform { // The matrix transform for this board is 5 columns over because the left half is 5 columns wide
+  col-offset = <5>;
+};
+
+&kscan0 { // These are the columns of the matrix of the Yackboard (with diodes pointing from row to column)
+  col-gpios
+    = <&pro_micro  6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+    , <&pro_micro  7 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+    , <&pro_micro  9 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+    , <&pro_micro  8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+    , <&pro_micro 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+    ;
+};
