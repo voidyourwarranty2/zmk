@@ -6,7 +6,6 @@
 
 #define DT_DRV_COMPAT zmk_behavior_trackball_pim447
 
-#include <devicetree.h>
 #include <drivers/behavior.h>
 #include <zmk/trackball_pim447.h>
 

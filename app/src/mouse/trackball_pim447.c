@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <drivers/sensor.h>
-#include <logging/log.h>
+#include <zmk/sensors.h>
 #include <zmk/hid.h>
 #include <zmk/endpoints.h>
 #include <zmk/trackball_pim447.h>
@@ -87,7 +86,7 @@ static void thread_code(void *p1, void *p2, void *p3)
 
     /* PIM447 trackball initialization. */
 
-    const char *label = DT_LABEL(DT_INST(0, pimoroni_trackball_pim447));
+    const char *label = DT_PROP(DT_INST(0, pimoroni_trackball_pim447),label);
     dev = device_get_binding(label);
     if (dev == NULL) {
         LOG_ERR("Cannot get TRACKBALL_PIM447 device");

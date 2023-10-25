@@ -6,11 +6,12 @@
 
 #define DT_DRV_COMPAT pimoroni_trackball_pim447
 
-#include <drivers/i2c.h>
-#include <drivers/sensor.h>
+#include <zephyr/drivers/i2c.h>
+#include <zephyr/device.h>
+#include "../../../../include/zmk/sensors.h"
 
 #define LOG_LEVEL CONFIG_SENSOR_LOG_LEVEL
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(trackball_pim447);
 
 #define TRACKBALL_PIM447_REG_LEFT   0x04
@@ -146,7 +147,8 @@ static int trackball_pim447_init(const struct device *dev)
 {
     struct trackball_pim447_data *data = dev->data;
 
-    data->i2c_dev = device_get_binding(DT_INST_BUS_LABEL(0));
+    //    data->i2c_dev = device_get_binding(DT_INST_BUS_LABEL(0));
+    data->i2c_dev = DEVICE_DT_GET(DT_INST_BUS(0));
     if (data->i2c_dev == NULL) {
         LOG_ERR("Failed to get I2C device");
         return -EINVAL;

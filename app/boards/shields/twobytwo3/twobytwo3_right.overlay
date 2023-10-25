@@ -13,17 +13,16 @@
     ;
 };
 
-// Note that the I2C bus for the Pimoroni 447 Track Ball can be defined in two ways. Either as &i2c0 which is
-// automatically set up with pins
-//
-//  sda-pin = <17>;
-//  scl-pin = <20>;
-//
-// for the Nice!Nano as can be seen here:
-// https://github.com/zmkfirmware/zmk/blob/main/app/boards/arm/nice_nano/nice_nano.dtsi#L45
+// ???
+// The definition of the pin assignment using pinctrl is new and untested,
 
 &i2c0 {
   status = "okay";
+
+  compatible = "nordic,nrf-twi";
+  pinctrl-0 = <&i2c0_default>;
+  pinctrl-1 = <&i2c0_sleep>;
+  pinctrl-names = "default", "sleep";
 
   trackball_pim447@a {
     compatible = "pimoroni,trackball_pim447";
@@ -33,22 +32,3 @@
     move-factor = <2>;           // Increase pointer velocity (default: 1)
   };
 };
-
-// Alternatively, I can use the notation
-//
-//&pro_micro_i2c {
-//  status = "okay";
-//
-//  trackball_pim447@a {
-//    ...
-//  };
-//};
-
-// further properties:
-//   invert-move-x;          // Invert pointer X axis (left is right, and vice versa)
-//   invert-move-y;          // Invert pointer Y axis (up is down, and vice versa)
-//   button = <1>;           // Send right-click when pressing the ball (default: 0, ie. left-click)
-//   swap-axes;              // Swap X and Y axes (horizontal is vertical, and vice versa)
-//   scroll-divisor = <1>;   // Increase wheel velocity (default: 2)
-//   invert-scroll-x;        // Invert wheel X axis (left is right, and vice versa)
-//   invert-scroll-y;        // Invert wheel Y axis (up is down, and vice versa)
