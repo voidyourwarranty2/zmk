@@ -11,7 +11,9 @@
 #include <zephyr/logging/log.h>
 #include <zmk/hid.h>
 #include <zmk/endpoints.h>
+#include <zmk/events/keycode_state_changed.h>
 #include <zmk/events/layer_state_changed.h>
+#include <zmk/keymap.h>
 #include <zmk/trackball_pim447.h>
 
 LOG_MODULE_REGISTER(PIM447, CONFIG_SENSOR_LOG_LEVEL);
@@ -41,7 +43,8 @@ LOG_MODULE_REGISTER(PIM447, CONFIG_SENSOR_LOG_LEVEL);
 #define EXACTNESS DT_PROP(DT_INST(0, pimoroni_trackball_pim447), exactness)
 #define MAX_ACCEL DT_PROP(DT_INST(0, pimoroni_trackball_pim447), max_accel)
 
-#define POWER_LAYER DT_PROP(DT_INST(0, pimoroni_trackball_pim447), power_layer)
+#define POWER_LAYER  DT_PROP(DT_INST(0, pimoroni_trackball_pim447), power_layer)
+#define IDLE_TIMEOUT DT_PROP(DT_INST(0, pimoroni_trackball_pim447), idle_timeout)
 
 static int mode = DT_PROP(DT_INST(0, pimoroni_trackball_pim447), mode);
 
@@ -69,6 +72,17 @@ void zmk_trackball_pim447_set_mode(int new_mode)
        default:
             break;
     }
+}
+
+static struct k_timer trackball_idle_timer; // timer that resets the keyboard to the default layer if idle for a certain period
+
+/*
+ * The function <trackball_idle_timer_expiry_function()> is called after <IDLE_TIMEOUT> seconds of idle period and
+ * resets the keyboard to layer 0.
+ */
+
+static void trackball_idle_timer_expiry_function ( struct k_timer *timer_id ) {
+  zmk_keymap_layer_to (0);
 }
 
 /*
@@ -253,11 +267,34 @@ static void thread_code(void *p1, void *p2, void *p3)
                 case PIM447_SCROLL: zmk_hid_mouse_scroll_set(0, 0); break;
                 default: break;
             }
+
+	    if (IDLE_TIMEOUT) {
+	      k_timer_stop (&trackball_idle_timer);
+	      k_timer_start (&trackball_idle_timer,K_SECONDS (IDLE_TIMEOUT),K_SECONDS (0));
+	    }
         }
 
         k_sleep (K_MSEC (POLL_INTERVAL));
     }
 }
+
+/*
+ * The function <trackball_keycode_state_changed_callback()> is the callback associated with events of the type
+ * <zmk_keycode_state_changed> as defined in ./app/include/zmk/events/keycode_state_changed.c.
+ */
+
+static int trackball_keycode_changed_callback ( const zmk_event_t *ev ) {
+
+  if (IDLE_TIMEOUT) {
+    k_timer_stop (&trackball_idle_timer);
+    k_timer_start (&trackball_idle_timer,K_SECONDS (IDLE_TIMEOUT),K_SECONDS (0)); // restart the timer that resets the layer to default after a certain idle period
+  }
+
+  return (ZMK_EV_EVENT_BUBBLE); // bubble this event b/c other listeners may need to see it, too
+}
+
+ZMK_LISTENER (trackball_keycode_changed,trackball_keycode_changed_callback); // the above function is a listener
+ZMK_SUBSCRIPTION (trackball_keycode_changed,zmk_keycode_state_changed);      // subscribe to all events of type <zmk_keycode_state_changed>
 
 #define STACK_SIZE 1024
 
@@ -293,12 +330,21 @@ static int trackball_layer_changed_callback ( const zmk_event_t *ev ) {
 	  LOG_DBG ("External power not controlled by track ball driver.\n");
 	}
 
+	if (IDLE_TIMEOUT) {
+	  k_timer_stop (&trackball_idle_timer);
+	  k_timer_start (&trackball_idle_timer,K_SECONDS (IDLE_TIMEOUT),K_SECONDS (0));
+	}
+
 	k_sleep (K_MSEC (GRACE_PERIOD));
 	k_thread_resume (thread_id);  // resume the track ball driver thread
       } else {
 	LOG_DBG ("Track ball layer %d deactivated, suspending track ball driver.\n",POWER_LAYER);
 	k_thread_suspend (thread_id); // suspend the track ball driver thread
 	k_sleep (K_MSEC (GRACE_PERIOD));
+
+	if (IDLE_TIMEOUT) {
+	  k_timer_stop (&trackball_idle_timer);
+	}
 
 	if (ext_power) {
 	  int power = ext_power_get (ext_power);
@@ -374,6 +420,8 @@ int zmk_trackball_pim447_init()
       LOG_DBG ("External power not controlled by track ball driver.");
     }
   }
+
+  k_timer_init (&trackball_idle_timer,trackball_idle_timer_expiry_function,NULL);
 
   return 0;
 }

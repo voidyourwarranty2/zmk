@@ -51,5 +51,6 @@
 //   swap-axes;                   // Swap X and Y axes (horizontal is vertical, and vice versa)
     poll-interval = <50>;        // Interval in milli-seconds at which the track ball is polled (default: 50)
     power-layer = <LAYER_NAVIGATION>; // layer whose activity switches on 3V3 output of the N!N or 0 for always on; default: 0
+    idle-timeout = <60>;         // After this period in seconds of idle time, switch back to the default layer; default: 0 (no timeout)
   };
 };

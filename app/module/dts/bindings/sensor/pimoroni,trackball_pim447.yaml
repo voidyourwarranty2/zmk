@@ -105,3 +105,8 @@ properties:
     type: int
     required: false
     default: 0
+
+  idle-timeout:
+    type: int
+    required: false
+    default: 0
