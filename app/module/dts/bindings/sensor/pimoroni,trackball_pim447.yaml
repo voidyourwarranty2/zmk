@@ -100,3 +100,8 @@ properties:
     type: int
     required: false
     default: 100
+
+  power-layer:
+    type: int
+    required: false
+    default: 0

@@ -1,6 +1,8 @@
 # Experimental Fork
 
-This is an experimental fork of the [ZMK Project](https://www.github.com/zmkfirmware/zmk). The following is its original `README.md` file.
+This is an experimental fork of the [ZMK Project](https://www.github.com/zmkfirmware/zmk).
+
+The following is the original README
 
 ## Zephyr™ Mechanical Keyboard (ZMK) Firmware
 

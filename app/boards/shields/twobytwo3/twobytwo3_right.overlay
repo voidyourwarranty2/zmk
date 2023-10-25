@@ -50,5 +50,6 @@
     button = <4>;                // Send mouse button 4 when pressing the ball which is usually ignored by the operating system (default: 0, ie. left-click)
 //   swap-axes;                   // Swap X and Y axes (horizontal is vertical, and vice versa)
     poll-interval = <50>;        // Interval in milli-seconds at which the track ball is polled (default: 50)
+    power-layer = <LAYER_NAVIGATION>; // layer whose activity switches on 3V3 output of the N!N or 0 for always on; default: 0
   };
 };

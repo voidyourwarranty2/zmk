@@ -6,7 +6,7 @@
   keymap {
     compatible = "zmk,keymap";
 
-  default_layer {
+    default_layer {
 
 // +-----+-----+-----+   +-----+-----+-----+
 // |  A  |  B  |  C  |   |  D  |  E  |  F  |
@@ -14,9 +14,16 @@
 // |        G        |   |        H        |
 // +-----------------+   +-----------------+
 
-    bindings = <
-           &kp A   &kp B   &kp C   &kp D   &kp E    &kp F
-                   &kp G                   &kp H
+      bindings = <
+             &tog LAYER_NAVIGATION  &kp B   &kp C   &kp D   &kp E    &kp F
+                                    &kp G                   &kp H
+        >;
+    };
+
+    navigation_layer {
+      bindings = <
+             &tog LAYER_NAVIGATION  &kp Q   &kp R   &kp D   &kp E    &kp F
+                                    &kp S                   &kp H
       >;
     };
   };
