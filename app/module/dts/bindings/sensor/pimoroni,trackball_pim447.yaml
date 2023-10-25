@@ -14,10 +14,25 @@ properties:
     type: int
     required: true
 
-  move-factor:
+  move-factor-x:
     type: int
     required: false
-    default: 1
+    default: 100
+
+  move-factor-y:
+    type: int
+    required: false
+    default: 100
+
+  move-inertia-x:
+    type: int
+    required: false
+    default: 0
+
+  move-inertia-y:
+    type: int
+    required: false
+    default: 0
 
   invert-move-x:
     type: boolean
@@ -36,7 +51,17 @@ properties:
     type: boolean
     required: false
 
-  scroll-divisor:
+  poll-interval:
+    type: int
+    required: false
+    default: 50
+
+  scroll-divisor-x:
+    type: int
+    required: false
+    default: 2
+
+  scroll-divisor-y:
     type: int
     required: false
     default: 2
@@ -56,3 +81,22 @@ properties:
     enum:
       - 1
       - 2
+      - 3
+
+  norm:
+    type: int
+    required: false
+    default: 1
+    enum:
+      - 1
+      - 2
+
+  exactness:
+    type: int
+    required: false
+    default: 4
+
+  max-accel:
+    type: int
+    required: false
+    default: 100

@@ -1,7 +1,9 @@
 /*
- * Copyright (c) 2021 Cedric VINCENT
+ * Copyright (c) 2021 Cedric VINCENT - original code
+ * Copyright (c) 2022 voidyourwarranty@mailbox.org - extension & modification
  *
  * SPDX-License-Identifier: MIT
+ *
  */
 
 #include <zmk/sensors.h>
@@ -10,23 +12,35 @@
 #include <zmk/trackball_pim447.h>
 
 LOG_MODULE_REGISTER(PIM447, CONFIG_SENSOR_LOG_LEVEL);
+//LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-#define MOVE_FACTOR    DT_PROP(DT_INST(0, pimoroni_trackball_pim447), move_factor)
+#define MOVE_X_FACTOR  DT_PROP(DT_INST(0, pimoroni_trackball_pim447), move_factor_x)
+#define MOVE_Y_FACTOR  DT_PROP(DT_INST(0, pimoroni_trackball_pim447), move_factor_y)
 #define MOVE_X_INVERT  DT_PROP(DT_INST(0, pimoroni_trackball_pim447), invert_move_x)
 #define MOVE_Y_INVERT  DT_PROP(DT_INST(0, pimoroni_trackball_pim447), invert_move_y)
-#define MOVE_X_FACTOR  (MOVE_FACTOR * (MOVE_X_INVERT ? -1 : 1))
-#define MOVE_Y_FACTOR  (MOVE_FACTOR * (MOVE_Y_INVERT ? -1 : 1))
+#define MOVE_X_INERTIA DT_PROP(DT_INST(0, pimoroni_trackball_pim447), move_inertia_x)
+#define MOVE_Y_INERTIA DT_PROP(DT_INST(0, pimoroni_trackball_pim447), move_inertia_y)
+#define FACTOR_X  (MOVE_X_FACTOR * (MOVE_X_INVERT ? -1 : 1))
+#define FACTOR_Y  (MOVE_Y_FACTOR * (MOVE_Y_INVERT ? -1 : 1))
 
-#define SCROLL_DIVISOR    DT_PROP(DT_INST(0, pimoroni_trackball_pim447), scroll_divisor)
 #define SCROLL_X_INVERT   DT_PROP(DT_INST(0, pimoroni_trackball_pim447), invert_scroll_x)
 #define SCROLL_Y_INVERT   DT_PROP(DT_INST(0, pimoroni_trackball_pim447), invert_scroll_y)
-#define SCROLL_X_DIVISOR  (SCROLL_DIVISOR * (SCROLL_X_INVERT ? -1 : 1))
-#define SCROLL_Y_DIVISOR  (SCROLL_DIVISOR * (SCROLL_Y_INVERT ?  1 : -1))
+#define SCROLL_X_DIVISOR  DT_PROP(DT_INST(0, pimoroni_trackball_pim447), scroll_divisor_x)
+#define SCROLL_Y_DIVISOR  DT_PROP(DT_INST(0, pimoroni_trackball_pim447), scroll_divisor_y)
+#define DIVISOR_X  (SCROLL_X_DIVISOR * (SCROLL_X_INVERT ? -1 : 1))
+#define DIVISOR_Y  (SCROLL_Y_DIVISOR * (SCROLL_Y_INVERT ?  1 : -1))
+
+#define SWAP_AXES      DT_PROP(DT_INST(0, pimoroni_trackball_pim447), swap_axes)
+#define POLL_INTERVAL  DT_PROP(DT_INST(0, pimoroni_trackball_pim447), poll_interval)
 
 #define BUTTON    DT_PROP(DT_INST(0, pimoroni_trackball_pim447), button)
-#define SWAP_AXES DT_PROP(DT_INST(0, pimoroni_trackball_pim447), swap_axes)
+#define NORM      DT_PROP(DT_INST(0, pimoroni_trackball_pim447), norm)
+#define EXACTNESS DT_PROP(DT_INST(0, pimoroni_trackball_pim447), exactness)
+#define MAX_ACCEL DT_PROP(DT_INST(0, pimoroni_trackball_pim447), max_accel)
 
 static int mode = DT_PROP(DT_INST(0, pimoroni_trackball_pim447), mode);
+
+#define ABS(x) ((x<0)?(-x):(x))
 
 void zmk_trackball_pim447_set_mode(int new_mode)
 {
@@ -48,35 +62,40 @@ void zmk_trackball_pim447_set_mode(int new_mode)
 }
 
 /*
- * It feels more natural and more confortable to convert the speed
- * reported by the PIM447 trackball.
+ * Given some <delta> that is reported from the track ball, depending on the currently stored motion <stored_dx>,
+ * <stored_dy>, implement acceleration by increasing <delta> depending on <stored_dx> and <stored_dy>.
  */
-static int16_t convert_speed(int32_t value)
-{
-    bool negative = (value < 0);
 
-    if (negative) {
-        value = -value;
-    }
+static int32_t acceleration ( int32_t stored_dx, int32_t stored_dy, int32_t delta ) {
 
-    switch (value) {
-        case 0:  value = 0;   break;
-        case 1:  value = 1;   break;
-        case 2:  value = 4;   break;
-        case 3:  value = 8;   break;
-        case 4:  value = 18;  break;
-        case 5:  value = 32;  break;
-        case 6:  value = 50;  break;
-        case 7:  value = 72;  break;
-        case 8:  value = 98;  break;
-        default: value = 127; break;
-    }
+  int32_t square;
 
-    if (negative) {
-        value = -value;
-    }
+  /*
+   * Acceleration depends on the 2d-distance stored. Here <square> is the square of the Euclidean norm by default. In
+   * order to enhance diagonal motion, the maximum norm can also be used.
+   */
 
-    return value;
+  if (NORM == PIM447_NORM_MAX) {
+    square = (ABS(stored_dx) + ABS(stored_dy))*(ABS(stored_dx) + ABS(stored_dy));
+  } else { // NORM == PIM447_NORM_EUCLID
+    square = stored_dx*stored_dx + stored_dy*stored_dy;
+  }
+
+  /*
+   * The absolute value, integer division and plus one make sure that a small range of <square> values are not
+   * accelerated.
+   */
+
+  int32_t accelerated = (ABS(square-1)/EXACTNESS+1)*EXACTNESS*delta/100;
+
+  /*
+   * Finally, the accelerated motion is capped at some maximum value.
+   */
+
+  if (ABS(accelerated) > ABS(8*MAX_ACCEL*3*delta/10000))
+    return (8*MAX_ACCEL*3*delta/10000);
+  else
+    return (accelerated);
 }
 
 static void thread_code(void *p1, void *p2, void *p3)
@@ -97,6 +116,15 @@ static void thread_code(void *p1, void *p2, void *p3)
 
     bool button_press_sent   = false;
     bool button_release_sent = false;
+
+    /*
+     * In order to implement acceleration and inertia of the pointer in mouse-move mode, only a part of the x,y
+     * difference that has been received from the track ball is immediately reported via HID. The remainder is stored in
+     * the following registers as 'yet to be reported'.
+     */
+
+    int32_t stored_dx = 0;
+    int32_t stored_dy = 0;
 
     while (true) {
         struct sensor_value pos_dx, pos_dy, pos_dz;
@@ -133,28 +161,63 @@ static void thread_code(void *p1, void *p2, void *p3)
                 pos_dx.val1 = pos_dy.val1;
                 pos_dy.val1 = tmp;
             }
+	}
 
-            switch(mode) {
-                default:
-                case PIM447_MOVE: {
-                    int dx = convert_speed(pos_dx.val1) * MOVE_X_FACTOR;
-                    int dy = convert_speed(pos_dy.val1) * MOVE_Y_FACTOR;
-                    zmk_hid_mouse_movement_set(dx, dy);
-                    send_report = true;
-                    clear = PIM447_MOVE;
-                    break;
-                }
+	switch (mode) {
+	default:
+	case PIM447_MOVE:
 
-                case PIM447_SCROLL: {
-                    int dx = pos_dx.val1 / SCROLL_X_DIVISOR;
-                    int dy = pos_dy.val1 / SCROLL_Y_DIVISOR;
-                    zmk_hid_mouse_scroll_set(dx, dy);
-                    send_report = true;
-                    clear = PIM447_SCROLL;
-                    break;
-                }
-            }
-        }
+	  {
+	    /*
+	     * Acceleration is implemented by re-scaling the current x,y difference reported from the sensors depending
+	     * on the most recent motion in (stored_dx,stored_dy).
+	     */
+
+	    int add_dx = acceleration (stored_dx,stored_dy,pos_dx.val1*FACTOR_X);
+	    int add_dy = acceleration (stored_dx,stored_dy,pos_dy.val1*FACTOR_Y);
+
+	    stored_dx += add_dx;
+	    stored_dy += add_dy;
+
+	    if ((stored_dx != 0) || (stored_dy != 0)) {
+
+	      /*
+	       * Inertia is implemented by sending only a part of the accelerated x,y difference and keeping the
+	       * remainder in the (store_dx,store_dy) registers.
+	       */
+
+	      int keep_dx = MOVE_X_INERTIA*stored_dx/100;
+	      int keep_dy = MOVE_Y_INERTIA*stored_dy/100;
+
+	      int send_dx = stored_dx-keep_dx;
+	      int send_dy = stored_dy-keep_dy;
+
+	      zmk_hid_mouse_movement_set (send_dx,send_dy);
+
+	      stored_dx = keep_dx;
+	      stored_dy = keep_dy;
+
+	      send_report = true;
+	      clear = PIM447_MOVE;
+	    }
+	  }
+
+	  break;
+
+	case PIM447_SCROLL:
+
+	  {
+	    int dx = pos_dx.val1 / DIVISOR_X;
+	    int dy = pos_dy.val1 / DIVISOR_Y;
+
+	    zmk_hid_mouse_scroll_set (dx,dy);
+
+	    send_report = true;
+	    clear = PIM447_MOVE;
+	  }
+
+	  break;
+	}
 
         if (pos_dz.val1 == 0x80 && button_press_sent == false) {
             zmk_hid_mouse_button_press(BUTTON);
@@ -178,7 +241,7 @@ static void thread_code(void *p1, void *p2, void *p3)
             }
         }
 
-        k_sleep(K_MSEC(10));
+        k_sleep (K_MSEC (POLL_INTERVAL));
     }
 }
 
