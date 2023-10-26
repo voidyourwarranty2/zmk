@@ -1,0 +1,40 @@
+#include <dt-bindings/zmk/matrix_transform.h>
+
+/ {
+  chosen {
+    zmk,kscan = &kscan0;
+    zmk,matrix_transform = &default_transform;
+  };
+
+  default_transform: keymap_transform_0 {
+    compatible = "zmk,matrix-transform";
+    columns = <6>;
+    rows = <2>;
+
+// +-----+-----+-----+  +-----+-----+-----+
+// | MX1 | MX2 | MX3 |  | MX4 | MX5 | Mx6 |
+// +-----+-----+-----+  +-----+-----+-----+
+// |       MX7       |  |       MX8       |
+// +-----------------+  +-----------------+
+//
+// MX9 MX10 MX11 MX12 for the mouse emulation row no. 2
+
+  map = <
+    RC(0,0) RC(0,1) RC(1,0) RC(0,4) RC(0,5) RC(1,4)
+            RC(1,1)                 RC(1,5)
+    RC(2,0) RC(2,1) RC(2,2) RC(2,3)
+    >;
+  };
+
+  kscan0: kscan_0 {
+    compatible = "zmk,kscan-gpio-matrix";
+    label = "KSCAN";
+    diode-direction = "row2col";
+
+    row-gpios
+      = <&pro_micro 15 GPIO_ACTIVE_HIGH>
+      , <&pro_micro 14 GPIO_ACTIVE_HIGH>
+      , <&pro_micro 21 GPIO_ACTIVE_HIGH>
+      ;
+  };
+};

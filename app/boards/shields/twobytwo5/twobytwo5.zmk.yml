@@ -1,0 +1,11 @@
+file_format: "1"
+id: twobytwo5
+name: Two By Two
+type: shield
+url: https://github.com/nonexist/twobytwo1
+requires: [pro_micro]
+features:
+  - keys
+siblings:
+  - twobytwo5_left
+  - twobytwo5_right

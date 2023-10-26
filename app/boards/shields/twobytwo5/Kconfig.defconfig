@@ -1,0 +1,16 @@
+if SHIELD_TWOBYTWO5_RIGHT
+
+config ZMK_KEYBOARD_NAME
+    default "Two By Two"
+
+config ZMK_SPLIT_ROLE_CENTRAL
+        default y
+
+endif
+
+if SHIELD_TWOBYTWO5_RIGHT || SHIELD_TWOBYTWO5_LEFT
+
+config ZMK_SPLIT
+    default y
+
+endif
