@@ -1,0 +1,13 @@
+
+#include "twobytwo4.dtsi" // Notice that the main dtsi files are included in the overlay.
+
+&default_transform { // The matrix transform for this board is 2 columns over because the left half is 2 columns wide according to the matrix.
+  col-offset = <2>;
+};
+
+&kscan0 {
+  col-gpios
+    = <&pro_micro 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+    , <&pro_micro 16 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+    ;
+};
