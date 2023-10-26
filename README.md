@@ -2,7 +2,7 @@
 
 This is an experimental fork of the [ZMK Project](https://www.github.com/zmkfirmware/zmk). The following is its original `README.md` file.
 
-# Zephyr™ Mechanical Keyboard (ZMK) Firmware
+## Zephyr™ Mechanical Keyboard (ZMK) Firmware
 
 [![Discord](https://img.shields.io/discord/719497620560543766)](https://zmk.dev/community/discord/invite)
 [![Build](https://github.com/zmkfirmware/zmk/workflows/Build/badge.svg)](https://github.com/zmkfirmware/zmk/actions)
