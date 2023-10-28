@@ -36,7 +36,7 @@ struct behavior_antecedent_morph_data {
 
 // Data shared by all instances
 static int32_t code_pressed; // most recently pressed key code (with implicit mods, usage page and keycode)
-static int64_t time_pressed; // time stamp in milli-seconds of that release
+static int64_t time_pressed; // time stamp in milli-seconds of that key press
 
 static int antecedent_morph_keycode_state_changed_listener(const zmk_event_t *eh);
 
@@ -46,28 +46,33 @@ ZMK_SUBSCRIPTION(behavior_antecedent_morph,zmk_keycode_state_changed);
 // Capture all key press and release events in order to record the most recently pressed key code.
 // Note that the event structure gives us the keycode (16 bit), the usage page (8 bit) and the implicit modifiers (8 bit),
 // but not the explicit modifiers. If the keymap contains the binding "&kp RA(Y)", for example, then right-alt is an
-// implicit modifier so that instead of the Y. the special character Ü is sent.
+// implicit modifier so that instead of the Y, the special character Ü is sent (US International layout).
 // Whether the user is holding down a shift key at that moment, however, i.e. the explicit modifiers, is not known. We could
 // reconstruct this information by tracking the press and release events of the modifier keys (keycodes higher than 0xe0)
 // though.
-// We here record all key release events of non-modifier keys (keycodes less than 0xe0).
+// We here record all key press events of non-modifier keys (keycodes less than 0xe0).
 static int antecedent_morph_keycode_state_changed_listener(const zmk_event_t *eh) {
   struct zmk_keycode_state_changed *ev = as_zmk_keycode_state_changed(eh);
 
   int32_t code = ((ev->implicit_modifiers & 0xff) << 24) | ((ev->usage_page & 0xff) << 16) | (ev->keycode & 0xffff);
 
   LOG_DBG("%s keycode %d page %d implicit mods %d explicit mods %d code 0x%08x",ev->state ? "down" : "up",ev->keycode,ev->usage_page,ev->implicit_modifiers,ev->explicit_modifiers,code);
-  if ((ev->state) && (ev->keycode < 0xe0)) {
+  if ((ev->state) && ((ev->keycode < 0xe0) || (ev->keycode > 0xff))) {
     LOG_DBG("code_pressed changes from 0x%08x to 0x%08x",code_pressed,code);
     code_pressed = code;
     time_pressed = ev->timestamp;
   }
 
-  return(ZMK_EV_EVENT_BUBBLE);
+  if (ev->keycode > 0xff) {
+    LOG_DBG("event dropped");
+    return(ZMK_EV_EVENT_HANDLED);
+  } else {
+    return(ZMK_EV_EVENT_BUBBLE);
+  }
 }
 
-// When an antecedent morph binding is pressed. we test whether the most recently pressed key code
-// is among the configured antecedents and whether the corresponding release event was no more
+// When an antecedent morph binding is pressed, we test whether the most recently pressed key code
+// is among the configured antecedents and whether the corresponding key press event was no more
 // than the configured delay time ago.
 static int on_antecedent_morph_binding_pressed(struct zmk_behavior_binding *binding,
 					       struct zmk_behavior_binding_event event) {
@@ -143,8 +148,6 @@ static int behavior_antecedent_morph_init(const struct device *dev) {
         .param2 = COND_CODE_0(DT_INST_PHA_HAS_CELL_AT_IDX(node, bindings, idx, param2), (0),            \
                               (DT_INST_PHA_BY_IDX(node, bindings, idx, param2))),                       \
     }
-
-// ??? add to the config the <antecedent> and the <max-delay-ms>
 
 #define KP_INST(n)                                                                                      \
     static struct behavior_antecedent_morph_config behavior_antecedent_morph_config_##n = {             \
