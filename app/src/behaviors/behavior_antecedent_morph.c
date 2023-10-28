@@ -35,15 +35,15 @@ struct behavior_antecedent_morph_data {
 };
 
 // Data shared by all instances
-static int32_t code_released; // most recently released key code (with implicit mods, usage page and keycode)
-static int64_t time_released; // time stamp in milli-seconds of that release
+static int32_t code_pressed; // most recently pressed key code (with implicit mods, usage page and keycode)
+static int64_t time_pressed; // time stamp in milli-seconds of that release
 
 static int antecedent_morph_keycode_state_changed_listener(const zmk_event_t *eh);
 
 ZMK_LISTENER(behavior_antecedent_morph, antecedent_morph_keycode_state_changed_listener);
 ZMK_SUBSCRIPTION(behavior_antecedent_morph,zmk_keycode_state_changed);
 
-// Capture all key press and release events in order to record the most recently released key code.
+// Capture all key press and release events in order to record the most recently pressed key code.
 // Note that the event structure gives us the keycode (16 bit), the usage page (8 bit) and the implicit modifiers (8 bit),
 // but not the explicit modifiers. If the keymap contains the binding "&kp RA(Y)", for example, then right-alt is an
 // implicit modifier so that instead of the Y. the special character Ü is sent.
@@ -57,16 +57,16 @@ static int antecedent_morph_keycode_state_changed_listener(const zmk_event_t *eh
   int32_t code = ((ev->implicit_modifiers & 0xff) << 24) | ((ev->usage_page & 0xff) << 16) | (ev->keycode & 0xffff);
 
   LOG_DBG("%s keycode %d page %d implicit mods %d explicit mods %d code 0x%08x",ev->state ? "down" : "up",ev->keycode,ev->usage_page,ev->implicit_modifiers,ev->explicit_modifiers,code);
-  if ((!ev->state) && (ev->keycode < 0xe0)) {
-    LOG_DBG("code_released changes from 0x%08x to 0x%08x",code_released,code);
-    code_released = code;
-    time_released = ev->timestamp;
+  if ((ev->state) && (ev->keycode < 0xe0)) {
+    LOG_DBG("code_pressed changes from 0x%08x to 0x%08x",code_pressed,code);
+    code_pressed = code;
+    time_pressed = ev->timestamp;
   }
 
   return(ZMK_EV_EVENT_BUBBLE);
 }
 
-// When an antecedent morph binding is pressed. we test whether the most recently released key code
+// When an antecedent morph binding is pressed. we test whether the most recently pressed key code
 // is among the configured antecedents and whether the corresponding release event was no more
 // than the configured delay time ago.
 static int on_antecedent_morph_binding_pressed(struct zmk_behavior_binding *binding,
@@ -81,13 +81,13 @@ static int on_antecedent_morph_binding_pressed(struct zmk_behavior_binding *bind
     return -ENOTSUP;
   }
 
-  LOG_DBG("press serial no. %d when code_released 0x%08x delay %dms explicit_mods 0x%02x",cfg->serial,code_released,(int32_t)(event.timestamp-time_released),zmk_hid_get_explicit_mods());
+  LOG_DBG("press serial no. %d when code_pressed 0x%08x delay %dms explicit_mods 0x%02x",cfg->serial,code_pressed,(int32_t)(event.timestamp-time_pressed),zmk_hid_get_explicit_mods());
   for (int i=0;i<cfg->antecedents_len;i++) {
-    if (code_released == cfg->antecedents[i]) {
+    if (code_pressed == cfg->antecedents[i]) {
       morph = true;
     }
   }
-  if ((morph) && ((int32_t)(event.timestamp-time_released)) < cfg->max_delay_ms) {
+  if ((morph) && ((int32_t)(event.timestamp-time_pressed)) < cfg->max_delay_ms) {
     LOG_DBG("morph condition satisfied");
     data->pressed_binding = (struct zmk_behavior_binding *)&cfg->morph_binding;
   } else {
@@ -130,7 +130,7 @@ static int behavior_antecedent_morph_init(const struct device *dev) {
     LOG_DBG("antedecent no. %d is 0x%08x.",i,cfg->antecedents[i]);
   }
 
-  code_released = 0;
+  code_pressed = 0;
 
   return 0;
 }
