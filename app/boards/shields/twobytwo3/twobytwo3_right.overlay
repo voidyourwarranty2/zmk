@@ -12,14 +12,10 @@
     ;
 };
 
-// Note that the Pimoroni 447 track ball can be associated to an I2C bus in two different ways. Either as &i2c0 which
-// has default settings
-//
-//  sda-pin = <17>; // i.e. P0.17 (as in 0*32 + 17) which is GPIO 2 in SparkFun Pro Micro numbering
-//  scl-pin = <20>; // i.e. P0.20 (as in 0*32 + 20) which is GPIO 3 in SparkFun Pro Micro numbering
-//
-// for the Nice!Nano as can be seen here:
-// https://github.com/zmkfirmware/zmk/blob/main/app/boards/arm/nice_nano/nice_nano.dtsi#L45
+// The following configures a Pimoroni Trackball PIM 447 that is mounted on the right half of the experimental keyboard.
+// If you hold the PIM447 module with connectors facing left, it has the correct orientation.
+// SDA is connected to pin 2 and SCL coneccted to pin 3 of the Nice!Nano v2 (all pin
+// numbers in "Spark Fun Pro Micro" convention). The INT pin remains unconnected.
 
 &i2c0 {
   status = "okay";
@@ -33,24 +29,24 @@
     compatible = "pimoroni,trackball_pim447";
     reg = <0xa>;
     label = "TRACKBALL_PIM447";
-    mode = <PIM447_MOVE>;        // default: PIM447_MOVE for mouse move; alternatives: PIM447_SCROLL for scroll wheel, PIM447_TOGGLE for toggle on button press
-    move-factor-x = <100>;       // Sensitivity X; default: 100
-    move-factor-y = <100>;       // Sensitivity Y; default: 100
-    move-inertia-x = <66>;       // Inertia X, between 0 (no inertia) and 99 (huge inertia); default: 0; note that some inertia is needed for acceleration
-    move-inertia-y = <66>;       // Inertia Y, between 0 (no inertia) and 99 (huge inertia); default: 0; note that some inertia is needed for acceleration
-    norm = <PIM447_NORM_EUCLID>; // Metric for 2d distance measurement; default: PIM447_NORM_EUCLID; alternative: PIM447_NORM_MAX in order to enhance diagonal movement
-    exactness = <4>;             // Range of small velocities that are not accelerated
-    max-accel = <100>;           // Maximum acceleration; default: 100
-    invert-move-x;               // Invert mouse X axis (left is right, and vice versa)
-    invert-move-y;               // Invert mouse Y axis (up is down, and vice versa)
-    scroll-divisor-x = <1>;      // Increase wheel velocity (default: 2)
-    scroll-divisor-y = <1>;      // Increase wheel velocity (default: 2)
-    invert-scroll-x;             // Invert wheel X axis (left is right, and vice versa)
-    invert-scroll-y;             // Invert wheel Y axis (up is down, and vice versa)
-    button = <4>;                // Send mouse button 4 when pressing the ball which is usually ignored by the operating system (default: 0, ie. left-click)
-//   swap-axes;                   // Swap X and Y axes (horizontal is vertical, and vice versa)
-    poll-interval = <50>;        // Interval in milli-seconds at which the track ball is polled (default: 50)
+    mode = <PIM447_MOVE>;             // default: PIM447_MOVE for mouse move; alternatives: PIM447_SCROLL for scroll wheel, PIM447_TOGGLE for toggle on button press
+    move-factor-x = <100>;            // Sensitivity X; default: 100
+    move-factor-y = <100>;            // Sensitivity Y; default: 100
+    move-inertia-x = <66>;            // Inertia X, between 0 (no inertia) and 99 (huge inertia); default: 0; note that some inertia is needed for acceleration
+    move-inertia-y = <66>;            // Inertia Y, between 0 (no inertia) and 99 (huge inertia); default: 0; note that some inertia is needed for acceleration
+    norm = <PIM447_NORM_EUCLID>;      // Metric for 2d distance measurement; default: PIM447_NORM_EUCLID; alternative: PIM447_NORM_MAX in order to enhance diagonal movement
+    exactness = <4>;                  // Range of small velocities that are not accelerated
+    max-accel = <100>;                // Maximum acceleration; default: 100
+    invert-move-x;                    // Invert mouse X axis (left is right, and vice versa)
+//    invert-move-y;                    // Invert mouse Y axis (up is down, and vice versa)
+    scroll-divisor-x = <1>;           // Increase wheel velocity (default: 2)
+    scroll-divisor-y = <1>;           // Increase wheel velocity (default: 2)
+    invert-scroll-x;                  // Invert wheel X axis (left is right, and vice versa)
+    invert-scroll-y;                  // Invert wheel Y axis (up is down, and vice versa)
+    button = <4>;                     // Send mouse button 4 when pressing the ball which is usually ignored by the operating system (default: 0, ie. left-click)
+    swap-axes;                        // Swap X and Y axes (horizontal is vertical, and vice versa)
+    poll-interval = <50>;             // Interval in milli-seconds at which the track ball is polled (default: 50)
     power-layer = <LAYER_NAVIGATION>; // layer whose activity switches on 3V3 output of the N!N or 0 for always on; default: 0
-    idle-timeout = <60>;         // After this period in seconds of idle time, switch back to the default layer; default: 0 (no timeout)
+    idle-timeout = <60>;              // After this period in seconds of idle time, switch back to the default layer; default: 0 (no timeout)
   };
 };
