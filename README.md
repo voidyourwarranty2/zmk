@@ -22,7 +22,7 @@ This is the firmware of the Yackboard v1. Required patches:
 
 - mouse emulation
 - custom retro-tap behavior
-- PIM447 patch if a Pimoroni Trackball PIM447 is to be used
+- PIM447 patch (my own version) if a Pimoroni Trackball PIM447 is to be used
 
 ### Patches
 
@@ -34,7 +34,7 @@ It was patched into the current branch on 2023-10-25. This patch is required whe
 The custom retro-tap behavior patch of https://github.com/nickconway/zmk/tree/retro-tap-binding was added on
 2023-10-25. It is used only in the keymap of the yackboard.
 
-The PIM447 patch was used, adapted to Zephyr 3.2 and heavily modified.
+The old PIM447 patch by cdc-mkb https://github.com/zmkfirmware/zmk/pull/961 was used, adapted to Zephyr 3.2 and heavily modified.
 
 The following is its original `README.md` file.
 
