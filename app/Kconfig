@@ -370,6 +370,8 @@ config ZMK_MOUSE
 
 endmenu # Mouse Options
 
+rsource "src/mouse/Kconfig"
+
 menu "Power Management"
 
 config ZMK_BATTERY_REPORTING
