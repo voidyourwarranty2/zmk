@@ -8,6 +8,10 @@ compatible: "zmk,behavior-antecedent-morph"
 include: zero_param.yaml
 
 properties:
+  defaults:
+    type: phandle-array
+    required: true
+    specifier-space: binding
   bindings:
     type: phandle-array
     required: true
