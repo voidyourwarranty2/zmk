@@ -94,13 +94,14 @@ static int on_antecedent_morph_binding_pressed(struct zmk_behavior_binding *bind
   struct behavior_antecedent_morph_data *data = dev->data;
   int morph = -1;
 
+  LOG_DBG("press zmk,behavior-antecedent-morph serial no. %d when <code_pressed> is 0x%08x; delay %dms; and explicit_mods 0x%02x",
+	  cfg->serial,code_pressed,(int32_t)(event.timestamp-time_pressed),zmk_hid_get_explicit_mods());
+
   if (data->pressed_binding != NULL) {
     LOG_ERR("Can't press the same antecedent-morph twice");
     return -ENOTSUP;
   }
 
-  LOG_DBG("press zmk,behavior-antecedent-morph serial no. %d when <code_pressed> is 0x%08x; delay %dms; and explicit_mods 0x%02x",
-	  cfg->serial,code_pressed,(int32_t)(event.timestamp-time_pressed),zmk_hid_get_explicit_mods());
   for (int i=0;i<cfg->antecedents_len;i++) {
     if (code_pressed == cfg->antecedents[i]) {
       morph = i;
@@ -158,7 +159,6 @@ static int on_antecedent_morph_binding_released(struct zmk_behavior_binding *bin
 
   struct zmk_behavior_binding *pressed_binding = data->pressed_binding;
   data->pressed_binding = NULL;
-
   return behavior_keymap_binding_released(pressed_binding, event);
 }
 
@@ -170,23 +170,36 @@ static const struct behavior_driver_api behavior_antecedent_morph_driver_api = {
 static int behavior_antecedent_morph_init(const struct device *dev) {
 
   const struct behavior_antecedent_morph_config *cfg = dev->config;
+  struct behavior_antecedent_morph_data *data = dev->data;
 
   LOG_DBG("zmk,behavior-antecedent-morph serial no. %d defined with %d defaults, %d bindings and %d antecedents.",cfg->serial,cfg->defaults_len,cfg->bindings_len,cfg->antecedents_len);
   for (int i=0; i<cfg->antecedents_len;i++) {
     LOG_DBG("antedecent no. %d is 0x%08x.",i,cfg->antecedents[i]);
   }
 
+  data->pressed_binding = NULL;
   code_pressed = 0;
   return 0;
 }
 
-#define _TRANSFORM_ENTRY(idx, node) ZMK_KEYMAP_EXTRACT_BINDING(idx, node)
+#define ZMK_KEYMAP_EXTRACT_DEFAULT(idx, drv_inst)                                                  \
+    {                                                                                              \
+        .behavior_dev = DT_PROP(DT_PHANDLE_BY_IDX(drv_inst, defaults, idx), label),                \
+        .param1 = COND_CODE_0(DT_PHA_HAS_CELL_AT_IDX(drv_inst, defaults, idx, param1), (0),        \
+                              (DT_PHA_BY_IDX(drv_inst, defaults, idx, param1))),                   \
+        .param2 = COND_CODE_0(DT_PHA_HAS_CELL_AT_IDX(drv_inst, defaults, idx, param2), (0),        \
+                              (DT_PHA_BY_IDX(drv_inst, defaults, idx, param2))),                   \
+    }
+
+#define _TRANSFORM_ENTRY_DEFAULT(idx, node) ZMK_KEYMAP_EXTRACT_DEFAULT(idx, node)
 
 #define TRANSFORMED_DEFAULTS(node)					                                              \
-  { LISTIFY(DT_INST_PROP_LEN(node, defaults), _TRANSFORM_ENTRY, (, ), DT_DRV_INST(node)) }
+  { LISTIFY(DT_INST_PROP_LEN(node, defaults), _TRANSFORM_ENTRY_DEFAULT, (, ), DT_DRV_INST(node)) }
+
+#define _TRANSFORM_ENTRY_BINDING(idx, node) ZMK_KEYMAP_EXTRACT_BINDING(idx, node)
 
 #define TRANSFORMED_BINDINGS(node)					                                              \
-  { LISTIFY(DT_INST_PROP_LEN(node, bindings), _TRANSFORM_ENTRY, (, ), DT_DRV_INST(node)) }
+  { LISTIFY(DT_INST_PROP_LEN(node, bindings), _TRANSFORM_ENTRY_BINDING, (, ), DT_DRV_INST(node)) }
 
 #define KP_INST(n)							                                              \
   static struct zmk_behavior_binding behavior_antecedent_morph_config_##n##_defaults[DT_INST_PROP_LEN(n, defaults)] = \
@@ -204,9 +217,8 @@ static int behavior_antecedent_morph_init(const struct device *dev) {
     .antecedents_len = DT_INST_PROP_LEN(n, antecedents)                                                               \
   };									                                              \
   static struct behavior_antecedent_morph_data behavior_antecedent_morph_data_##n = {                                 \
-    .pressed_binding = NULL                                                                                           \
   };									                                              \
-  DEVICE_DT_INST_DEFINE(n,behavior_antecedent_morph_init,NULL,NULL,	                                              \
+  DEVICE_DT_INST_DEFINE(n,behavior_antecedent_morph_init,NULL,&behavior_antecedent_morph_data_##n,   		      \
 			&behavior_antecedent_morph_config_##n,		                                              \
 			APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                                             \
 			&behavior_antecedent_morph_driver_api);
