@@ -2,19 +2,13 @@ cmake_minimum_required(VERSION 3.13.1)
 
 set(CONFIG_APPLICATION_DEFINED_SYSCALL true)
 
-# Add our custom Zephyr module for drivers w/ syscalls, etc.
-list(APPEND DTS_ROOT ${CMAKE_SOURCE_DIR}/drivers/zephyr)
-
-set(ZephyrBuildConfiguration_ROOT ${CMAKE_SOURCE_DIR}/cmake)
-
-list(APPEND ZEPHYR_EXTRA_MODULES
-  ${CMAKE_CURRENT_SOURCE_DIR}/module
-)
+set(ZEPHYR_EXTRA_MODULES "${ZMK_EXTRA_MODULES};${CMAKE_CURRENT_SOURCE_DIR}/module;${CMAKE_CURRENT_SOURCE_DIR}/keymap-module")
 
 # Find Zephyr. This also loads Zephyr's build system.
 find_package(Zephyr REQUIRED HINTS ../zephyr)
 project(zmk)
 
+zephyr_linker_sources(SECTIONS include/linker/zmk-behaviors.ld)
 zephyr_linker_sources(RODATA include/linker/zmk-events.ld)
 
 # Add your source file to the "app" target. This must come after
@@ -22,6 +16,7 @@ zephyr_linker_sources(RODATA include/linker/zmk-events.ld)
 target_include_directories(app PRIVATE include)
 target_sources(app PRIVATE src/stdlib.c)
 target_sources(app PRIVATE src/activity.c)
+target_sources(app PRIVATE src/behavior.c)
 target_sources(app PRIVATE src/kscan.c)
 target_sources(app PRIVATE src/matrix_transform.c)
 target_sources(app PRIVATE src/sensors.c)
@@ -94,7 +89,7 @@ target_sources_ifdef(CONFIG_USB_DEVICE_STACK app PRIVATE src/usb.c)
 target_sources_ifdef(CONFIG_ZMK_USB app PRIVATE src/usb_hid.c)
 target_sources_ifdef(CONFIG_ZMK_RGB_UNDERGLOW app PRIVATE src/rgb_underglow.c)
 target_sources_ifdef(CONFIG_ZMK_BACKLIGHT app PRIVATE src/backlight.c)
-target_sources(app PRIVATE src/workqueue.c)
+target_sources_ifdef(CONFIG_ZMK_LOW_PRIORITY_WORK_QUEUE app PRIVATE src/workqueue.c)
 target_sources(app PRIVATE src/main.c)
 
 add_subdirectory(src/display/)
