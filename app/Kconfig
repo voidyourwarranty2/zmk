@@ -37,6 +37,17 @@ config BT_DIS_MODEL
 config BT_DIS_MANUF
     default "ZMK Project"
 
+# Hardware specific overrides
+
+if SOC_SERIES_NRF52X
+
+# Default on for our usage until boards implement retained bootmode.
+config NRF_STORE_REBOOT_TYPE_GPREGRET
+    bool
+    default y
+
+endif
+
 menu "HID"
 
 choice ZMK_HID_REPORT_TYPE
@@ -171,11 +182,6 @@ config ZMK_BLE_PASSKEY_ENTRY
 
 config BT_SMP_ALLOW_UNAUTH_OVERWRITE
     imply ZMK_BLE_PASSKEY_ENTRY
-
-choice BT_LL_SW_LLCP_IMPL
-    default BT_LL_SW_LLCP_LEGACY if !ZMK_BLE_EXPERIMENTAL_CONN
-
-endchoice
 
 config BT_CTLR_PHY_2M
     default n if ZMK_BLE_EXPERIMENTAL_CONN
@@ -387,6 +393,8 @@ config ZMK_IDLE_TIMEOUT
 
 config ZMK_SLEEP
     bool "Enable deep sleep support"
+    depends on HAS_POWEROFF
+    select POWEROFF
     imply USB
 
 if ZMK_SLEEP
@@ -593,9 +601,6 @@ endmenu
 
 #ZMK
 endmenu
-
-config HEAP_MEM_POOL_SIZE
-    default 8192 if ZMK_DISPLAY
 
 config KERNEL_BIN_NAME
     default "zmk"
