@@ -116,8 +116,8 @@ static zmk_hid_indicators_t hid_indicators = 0;
 
 static void split_svc_update_indicators_callback(struct k_work *work) {
     LOG_DBG("Raising HID indicators changed event: %x", hid_indicators);
-    ZMK_EVENT_RAISE(new_zmk_hid_indicators_changed(
-        (struct zmk_hid_indicators_changed){.indicators = hid_indicators}));
+    raise_zmk_hid_indicators_changed(
+        (struct zmk_hid_indicators_changed){.indicators = hid_indicators});
 }
 
 static K_WORK_DEFINE(split_svc_update_indicators_work, split_svc_update_indicators_callback);
@@ -265,7 +265,7 @@ int zmk_split_bt_sensor_triggered(uint8_t sensor_index,
 }
 #endif /* ZMK_KEYMAP_HAS_SENSORS */
 
-int service_init(const struct device *_arg) {
+static int service_init(void) {
     static const struct k_work_queue_config queue_config = {
         .name = "Split Peripheral Notification Queue"};
     k_work_queue_start(&service_work_q, service_q_stack, K_THREAD_STACK_SIZEOF(service_q_stack),
