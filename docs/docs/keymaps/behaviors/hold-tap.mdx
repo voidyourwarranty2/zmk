@@ -83,6 +83,42 @@ For example, if you press `&mt LEFT_SHIFT A` and then release it without pressin
 };
 ```
 
+#### Customizing the Retro-Tap Behavior
+
+To define a behavior to use instead of the tap behavior, include `retro-tap-behavior`, `retro-tap-param1`, and/or
+`retro-tap-param2` in your hold-tap definition.
+
+- `retro-tap-behavior` refers to the label string of the desired behavior. See below for a list of these label strings for built-in behaviors.
+- `retro-tap-param1` refers to the first thing that comes after the behavior in your keymap. e.g. for `&mt LSHFT A`, LSHFT will be param1.
+- `retro-tap-param2` refers to the second thing that comes after the behavior in your keymap. e.g. for `&mt LSHFT A`, A will be param2.
+
+List of built-in behaviors and their corresponding label strings:
+
+- &bl - "bcklight"
+- &bt - "bluetooth"
+- &caps_word - "caps_word"
+- &ext_power - "extpower"
+- &gresc - "grave_escape"
+- &kp - "key_press"
+- &key_repeat - "key_repeat"
+- &kt - "key_toggle"
+- &lt - "layer_tap"
+- &mt - "mod_tap"
+- &mo - "momentary_layer"
+- &mkp - "mouse_key_press"
+- &none - "none"
+- &out - "outputs"
+- &sys_reset - "sysreset"
+- &bootloader - "bootload"
+- &rgb_ug - "rgb_ug"
+- &soft_off - "z_so_off"
+- &sk - "sticky_key"
+- &sl - "sticky_layer"
+- &studio_unlock - "studio_unlock"
+- &to - "to_layer"
+- &tog - "toggle_layer"
+- &trans - "transparent"
+
 #### `hold-while-undecided`
 
 If enabled, the hold behavior will immediately be held on hold-tap press, and will release before the behavior is sent in the event the hold-tap resolves into a tap. With most modifiers this will not affect typing, and is useful for using modifiers with the mouse.
