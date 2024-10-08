@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: MIT
  *
- * This is the ZMK original behavior with a modernized version of the custom retro tap patch of
- * https://github.com/zmkfirmware/zmk/compare/main...nickconway:zmk:retro-tap-binding
+ * This is the original ZMK behavior with a modernized version of the custom retro tap patch of
+ * https://github.com/nickconway/zmk/tree/retro-tap-binding
  */
 
 #define DT_DRV_COMPAT zmk_behavior_hold_tap
@@ -450,7 +450,7 @@ static int press_retrotap_binding(struct active_hold_tap *hold_tap) {
                                            .param1 = hold_tap->config->retrotap_param1,
                                            .param2 = hold_tap->config->retrotap_param2};
     store_last_hold_tapped(hold_tap);
-    return zmk_behavior_invoke_binding(&binding, event, true);
+    return behavior_keymap_binding_pressed(&binding, event);
 }
 
 static int release_hold_binding(struct active_hold_tap *hold_tap) {
@@ -493,7 +493,7 @@ static int release_retrotap_binding(struct active_hold_tap *hold_tap) {
     struct zmk_behavior_binding binding = {.behavior_dev = hold_tap->config->retrotap_behavior_dev,
                                            .param1 = hold_tap->config->retrotap_param1,
                                            .param2 = hold_tap->config->retrotap_param2};
-    return zmk_behavior_invoke_binding(&binding, event, false);
+    return behavior_keymap_binding_released(&binding, event);
 }
 
 static int press_binding(struct active_hold_tap *hold_tap) {
@@ -622,7 +622,6 @@ static void decide_retro_tap(struct active_hold_tap *hold_tap) {
     }
     if (hold_tap->status == STATUS_HOLD_TIMER) {
         release_binding(hold_tap);
-        LOG_DBG("%d retro tap", hold_tap->position);
 	if (strcmp (hold_tap->config->retrotap_behavior_dev,"") == 0) {
 	  hold_tap->status = STATUS_TAP;
 	} else {
