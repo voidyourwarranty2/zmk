@@ -1,0 +1,19 @@
+if SHIELD_YACKBOARD_RIGHT
+
+config ZMK_KEYBOARD_NAME
+  default "Yackboard"
+
+config ZMK_SPLIT_ROLE_CENTRAL
+  default y
+
+endif
+
+if SHIELD_YACKBOARD_RIGHT || SHIELD_YACKBOARD_LEFT
+
+config ZMK_SPLIT
+  default y
+
+config I2C
+  default y
+
+endif

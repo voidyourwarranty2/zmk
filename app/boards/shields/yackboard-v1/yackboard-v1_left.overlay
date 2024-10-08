@@ -1,0 +1,11 @@
+#include "yackboard-v1.dtsi" // Notice that the main dtsi files are included in the overlay.
+
+&kscan0 { // These are the column numbers of the Yackboard (diodes from row to column)
+  col-gpios
+    = <&pro_micro  6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+    , <&pro_micro  7 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+    , <&pro_micro  9 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+    , <&pro_micro  8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+    , <&pro_micro 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+    ;
+};
