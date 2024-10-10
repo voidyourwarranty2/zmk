@@ -509,6 +509,10 @@ static int press_binding(struct active_hold_tap *hold_tap) {
             return press_hold_binding(hold_tap);
         }
     } else if (hold_tap->status == STATUS_RETROTAP) {
+        if (hold_tap->config->hold_while_undecided) {
+            // time to release the hold before pressing the retro tap
+            release_hold_binding(hold_tap);
+        }
         return press_retrotap_binding(hold_tap);
     } else {
         if (hold_tap->config->hold_while_undecided &&
