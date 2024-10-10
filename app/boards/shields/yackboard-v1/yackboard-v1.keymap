@@ -123,7 +123,7 @@
       flavor = "balanced";
       tapping-term-ms = <280>;
       quick-tap-ms = <175>;
-      require-prior-idle-ms = <150>;
+//      require-prior-idle-ms = <150>;
       hold-trigger-key-positions = <POSITION_R POSITION_T>;
       hold-trigger-on-release;
       bindings = <&kp>, <&kp>;
@@ -135,7 +135,7 @@
       flavor = "balanced";
       tapping-term-ms = <280>;
       quick-tap-ms = <175>;
-      require-prior-idle-ms = <150>;
+//      require-prior-idle-ms = <150>;
       hold-trigger-key-positions = <POSITION_L POSITION_T>;
       hold-trigger-on-release;
       bindings = <&kp>, <&kp>;
@@ -147,7 +147,7 @@
       flavor = "balanced";
       tapping-term-ms = <280>;
       quick-tap-ms = <175>;
-      require-prior-idle-ms = <150>;
+//      require-prior-idle-ms = <150>;
       hold-trigger-key-positions = <POSITION_R POSITION_T>;
       hold-trigger-on-release;
       bindings = <&kp>, <&ad_a>;
@@ -159,7 +159,7 @@
       flavor = "balanced";
       tapping-term-ms = <280>;
       quick-tap-ms = <175>;
-      require-prior-idle-ms = <150>;
+//      require-prior-idle-ms = <150>;
       hold-trigger-key-positions = <POSITION_R POSITION_T>;
       hold-trigger-on-release;
       bindings = <&kp>, <&ad_u>;
@@ -171,7 +171,7 @@
       flavor = "balanced";
       tapping-term-ms = <280>;
       quick-tap-ms = <175>;
-      require-prior-idle-ms = <150>;
+//      require-prior-idle-ms = <150>;
       hold-trigger-key-positions = <POSITION_L POSITION_T>;
       hold-trigger-on-release;
       bindings = <&kp>, <&ad_n>;
@@ -183,7 +183,7 @@
       flavor = "balanced";
       tapping-term-ms = <280>;
       quick-tap-ms = <175>;
-      require-prior-idle-ms = <150>;
+//      require-prior-idle-ms = <150>;
       hold-trigger-key-positions = <POSITION_R POSITION_T>;
       hold-trigger-on-release;
       bindings = <&mo>, <&kp>;
@@ -195,7 +195,7 @@
       flavor = "balanced";
       tapping-term-ms = <280>;
       quick-tap-ms = <175>;
-      require-prior-idle-ms = <150>;
+//      require-prior-idle-ms = <150>;
       hold-trigger-key-positions = <POSITION_L POSITION_T>;
       hold-trigger-on-release;
       bindings = <&mo>, <&kp>;
@@ -207,7 +207,7 @@
       flavor = "balanced";
       tapping-term-ms = <280>;
       quick-tap-ms = <175>;
-      require-prior-idle-ms = <150>;
+//      require-prior-idle-ms = <150>;
       hold-trigger-key-positions = <POSITION_R POSITION_T>;
       hold-trigger-on-release;
       bindings = <&mo>, <&qu_mod>;
@@ -222,7 +222,7 @@
       flavor = "balanced";
       tapping-term-ms = <280>;
       quick-tap-ms = <175>;
-      require-prior-idle-ms = <150>;
+//      require-prior-idle-ms = <150>;
       hold-trigger-key-positions = <POSITION_R POSITION_T>;
       hold-trigger-on-release;
       bindings = <&mo>, <&ad_h>;
@@ -234,7 +234,7 @@
       flavor = "balanced";
       tapping-term-ms = <280>;
       quick-tap-ms = <175>;
-      require-prior-idle-ms = <150>;
+//      require-prior-idle-ms = <150>;
       hold-trigger-key-positions = <POSITION_L POSITION_T>;
       hold-trigger-on-release;
       bindings = <&mo>, <&ad_g>;
@@ -246,7 +246,7 @@
       flavor = "balanced";
       tapping-term-ms = <280>;
       quick-tap-ms = <175>;
-      require-prior-idle-ms = <150>;
+//      require-prior-idle-ms = <150>;
       hold-trigger-key-positions = <POSITION_L POSITION_T>;
       hold-trigger-on-release;
       bindings = <&mo>, <&ad_x>;
