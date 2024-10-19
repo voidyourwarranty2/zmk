@@ -4,7 +4,7 @@ This is an inofficial fork of [ZMK](https://github.com/zmkfirmware/zmk/). This m
 
 * `devel-adaptive`: my adaptive keys aka antecedent morph behavior patch
 
-* 'devel-retrotap`: Nick Conway's [retrotap behavior](https://github.com/nickconway/zmk/tree/retro-tap-binding) retrotap behavior patch, rebased to the current main.
+* `devel-retrotap`: Nick Conway's [retrotap behavior](https://github.com/nickconway/zmk/tree/retro-tap-binding) patch, rebased to the current main.
 
 * `devel-yackboard`: the above patches and the definition of my personal key board, the [Yackboard v1](https://gitlab.com/voidyourwarranty/yackboard).
 
