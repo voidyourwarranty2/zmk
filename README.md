@@ -1,3 +1,15 @@
+# Inofficial Fork of ZMK
+
+This is an inofficial fork of [ZMK](https://github.com/zmkfirmware/zmk/). This main branch tracks the original main branch except for this `README.md`. I try to keep the following branches up to date that might be of interest to you:
+
+* `devel-adaptive`: my adaptive keys aka antecedent morph behavior patch
+
+* 'devel-retrotap`: Nick Conway's [retrotap behavior](https://github.com/nickconway/zmk/tree/retro-tap-binding) retrotap behavior patch, rebased to the current main.
+
+* `devel-yackboard`: the above patches and the definition of my personal key board, the [Yackboard v1](https://gitlab.com/voidyourwarranty/yackboard).
+
+The following is the original README.
+
 # Zephyr™ Mechanical Keyboard (ZMK) Firmware
 
 [![Discord](https://img.shields.io/discord/719497620560543766)](https://zmk.dev/community/discord/invite)
