@@ -1,0 +1,35 @@
+// This is the key map of the breadboard cirquit.
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/mouse.h>   // This is required when using &mkp mouse key events.
+#include <dt-bindings/zmk/bt.h>      // This is required when using &bt bluetooth commands.
+#include <dt-bindings/zmk/outputs.h> // This is required when using the &out output commands.
+
+/ {
+  keymap {
+    compatible = "zmk,keymap";
+
+// The numbers are the position codes of the breadboard cirquit
+//
+// +-------+-------+      +-------+-------+
+// |    0  |    1  |      |    2  |    3  |
+// +-------+-------+      +-------+-------+
+// |    4  |    5  |      |    6  |    7  |
+// +-------+-------+-     +-------+-------+
+
+    default_layer { // #define L_DEF 0
+      bindings = <
+    &kp A    &kp B         &kp C   &kp D
+    &kp E    &kp F         &kp G   &kp H
+        >;
+    };
+
+    navigation_layer { // #define L_NAV 1
+      bindings = <
+    &kp A    &kp B         &kp C   &kp D
+    &kp E    &kp F         &kp G   &kp H
+      >;
+    };
+  };
+};

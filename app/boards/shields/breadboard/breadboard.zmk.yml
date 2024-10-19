@@ -1,0 +1,11 @@
+file_format: "1"
+id: breadboard
+name: Breadboard
+type: shield
+url: https://github.com/nonexist/breadboard
+requires: [pro_micro]
+features:
+  - keys
+siblings:
+  - breadboard_left
+  - breadboard_right

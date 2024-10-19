@@ -1,0 +1,13 @@
+//#include <dt-bindings/zmk/trackball_pim447.h>
+#include "breadboard.dtsi"
+
+&default_transform { // The matrix transform for this board is 5 columns over because the left half is 5 columns wide
+  col-offset = <2>;
+};
+
+&kscan0 { // These are the columns of the matrix of the Yackboard (with diodes pointing from row to column)
+  col-gpios
+    = <&pro_micro 14 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+    , <&pro_micro 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+    ;
+};

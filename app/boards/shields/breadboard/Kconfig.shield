@@ -1,0 +1,16 @@
+#
+# Configuration that defines the shield.
+#
+
+config SHIELD_BREADBOARD
+  def_bool $(shields_list_contains,breadboard)
+
+config SHIELD_BREADBOARD_LEFT
+  def_bool $(shields_list_contains,breadboard_left)
+
+config SHIELD_BREADBOARD_RIGHT
+  def_bool $(shields_list_contains,breadboard_right)
+
+#
+# End of file.
+#
