@@ -113,7 +113,8 @@
 //
 // require-prior-idle-ms = <150>;
 //   The hold function can trigger only if at least this time has passed since the previous key press, i.e. when
-//   typing fast, the hold function requires a tiny pause to activate.
+//   typing fast, the hold function requires a tiny pause to activate. I am not using this as I need the hold function
+//   on the layer change keys for numbers and navigation quicker than that.
 //
 // hold-trigger-key-positions = <...>;
 //   All key position codes not listed here, i.e. those in the same block, require the full tapping-time-ms to
@@ -143,7 +144,6 @@
       flavor = "balanced";
       tapping-term-ms = <280>;
       quick-tap-ms = <175>;
-//      require-prior-idle-ms = <150>;
       hold-trigger-key-positions = <POSITION_R POSITION_T>;
       hold-trigger-on-release;
       bindings = <&kp>, <&kp>;
@@ -155,7 +155,6 @@
       flavor = "balanced";
       tapping-term-ms = <280>;
       quick-tap-ms = <175>;
-//      require-prior-idle-ms = <150>;
       hold-trigger-key-positions = <POSITION_L POSITION_T>;
       hold-trigger-on-release;
       bindings = <&kp>, <&kp>;
@@ -167,7 +166,6 @@
       flavor = "balanced";
       tapping-term-ms = <280>;
       quick-tap-ms = <175>;
-//      require-prior-idle-ms = <150>;
       hold-trigger-key-positions = <POSITION_R POSITION_T>;
       hold-trigger-on-release;
       bindings = <&kp>, <&ad_a>;
@@ -179,7 +177,6 @@
       flavor = "balanced";
       tapping-term-ms = <280>;
       quick-tap-ms = <175>;
-//      require-prior-idle-ms = <150>;
       hold-trigger-key-positions = <POSITION_R POSITION_T>;
       hold-trigger-on-release;
       bindings = <&kp>, <&ad_u>;
@@ -191,7 +188,6 @@
       flavor = "balanced";
       tapping-term-ms = <280>;
       quick-tap-ms = <175>;
-//      require-prior-idle-ms = <150>;
       hold-trigger-key-positions = <POSITION_L POSITION_T>;
       hold-trigger-on-release;
       bindings = <&kp>, <&ad_n>;
@@ -203,7 +199,6 @@
       flavor = "balanced";
       tapping-term-ms = <280>;
       quick-tap-ms = <175>;
-//      require-prior-idle-ms = <150>;
       hold-trigger-key-positions = <POSITION_R POSITION_T>;
       hold-trigger-on-release;
       bindings = <&mo>, <&kp>;
@@ -215,7 +210,6 @@
       flavor = "balanced";
       tapping-term-ms = <280>;
       quick-tap-ms = <175>;
-//      require-prior-idle-ms = <150>;
       hold-trigger-key-positions = <POSITION_L POSITION_T>;
       hold-trigger-on-release;
       bindings = <&mo>, <&kp>;
@@ -227,7 +221,6 @@
       flavor = "balanced";
       tapping-term-ms = <280>;
       quick-tap-ms = <175>;
-//      require-prior-idle-ms = <150>;
       hold-trigger-key-positions = <POSITION_R POSITION_T>;
       hold-trigger-on-release;
       bindings = <&mo>, <&qu_mod>;
@@ -242,7 +235,6 @@
       flavor = "balanced";
       tapping-term-ms = <280>;
       quick-tap-ms = <175>;
-//      require-prior-idle-ms = <150>;
       hold-trigger-key-positions = <POSITION_R POSITION_T>;
       hold-trigger-on-release;
       bindings = <&mo>, <&ad_h>;
@@ -254,7 +246,6 @@
       flavor = "balanced";
       tapping-term-ms = <280>;
       quick-tap-ms = <175>;
-//      require-prior-idle-ms = <150>;
       hold-trigger-key-positions = <POSITION_L POSITION_T>;
       hold-trigger-on-release;
       bindings = <&mo>, <&ad_g>;
@@ -266,7 +257,6 @@
       flavor = "balanced";
       tapping-term-ms = <280>;
       quick-tap-ms = <175>;
-//      require-prior-idle-ms = <150>;
       hold-trigger-key-positions = <POSITION_L POSITION_T>;
       hold-trigger-on-release;
       bindings = <&mo>, <&shsz>;
@@ -323,15 +313,56 @@
   };
 };
 
+// On the backspace key, there are also functions to delete the subsequent or the previous word
+// by issuing the Emacs key combinations C-DEL or M-Backspace, respectively.
+
+/ {
+  macros {
+    wd_del: ctrl_delete {
+      label = "C-DEL";
+      compatible = "zmk,behavior-macro";
+      #binding-cells = <0>;
+      bindings = <&macro_press &kp LCTRL>, <&macro_tap &kp DEL>, <&macro_release &kp LCTRL>;
+    };
+    wd_back: alt_backspace {
+      label = "M-BSPC";
+      compatible = "zmk,behavior-macro";
+      #binding-cells = <0>;
+      bindings = <&macro_press &kp ESC &kp BSPC>;
+    };
+  };
+};
+
 // For some keys, the shifted variant is constructed manually.
+//
+// The backspace key with shift gives delete. If held longer, backspace deletes the previous word
+// delete deletes the subsequent word.
 
 / {
   behaviors {
+    ht_del: hold_tap_delete {
+      compatible = "zmk,behavior-hold-tap";
+      label = "HOLD_TAP_DELETE";
+      #binding-cells = <2>;
+      flavor = "balanced";
+      quick-tap-ms = <175>;
+      tapping-term-ms = <200>;
+      bindings = <&wd_del>, <&kp>;
+    };
+    ht_back: hold_tap_backspace {
+      compatible = "zmk,behavior-hold-tap";
+      label = "HOLD_TAP_BACKSPACE";
+      #binding-cells = <2>;
+      flavor = "balanced";
+      quick-tap-ms = <175>;
+      tapping-term-ms = <200>;
+      bindings = <&wd_back>, <&kp>;
+    };
     shbs: shift_backspace { // the backspace key with [Shift] is [Del]
       compatible = "zmk,behavior-mod-morph";
       label = "SHIFT_BACKSPACE";
       #binding-cells = <0>;
-      bindings = <&kp BSPC>, <&kp DEL>;
+      bindings = <&ht_back BSPC BSPC>, <&ht_del DEL DEL>;
       mods = <(MOD_LSFT|MOD_RSFT)>;
     };
     shsz: shift_sz { // the [ß] with [Shift] is the [§] sign
@@ -628,6 +659,21 @@
     DEF_MACRO (das, "MAC_DAS",  &kp D &kp A &kp S)
     DEF_MACRO (mit, "MAC_MIT",  &kp M &kp I &kp T)
     DEF_MACRO (sich,"MAC_SICH", &kp S &kp I &kp C &kp H)
+
+    mac_kl: macro_kill_line {
+      label = "MACRO_KILL_LINE";
+      compatible = "zmk,behavior-macro";
+      #binding-cells = <0>;
+      wait-ms = <150>;
+      bindings = <&macro_press &kp LCTL>, <&macro_tap &kp K>, <&macro_release &kp LCTL>;
+    };
+    mac_kwl: macro_kill_whole_line {
+      label = "MACRO_KILL_WHOLE_LINE";
+      compatible = "zmk,behavior-macro";
+      #binding-cells = <0>;
+      wait-ms = <150>;
+      bindings = <&macro_press &kp LCTRL &kp LSHFT>, <&macro_tap &kp BSPC>, <&macro_release &kp LCTRL &kp LSHFT>;
+    };
   };
 };
 
@@ -662,6 +708,11 @@
     DEF_COMBO (das, &mac_das, 14 18,L_DEF L_SHF) // D+A = das
     DEF_COMBO (mit, &mac_mit, 16  8,L_DEF L_SHF) // M+I = mit
     DEF_COMBO (sich,&mac_sich,16 21,L_DEF L_SHF) // S+I = sich
+
+    // Combos for deletion
+
+    DEF_COMBO (kl,  &mac_kl,  39 44,0) // Tab+Del = kill-line
+    DEF_COMBO (kwl, &mac_kwl, 37 44,0) // Esc+Del = kill-whole-line
   };
 };
 
