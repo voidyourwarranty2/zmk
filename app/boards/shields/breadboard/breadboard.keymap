@@ -19,13 +19,15 @@
 // +-------+-------+-     +-------+-------+
 
     default_layer { // #define L_DEF 0
+      display-name = "Base";
       bindings = <
-    &kp A    &kp B         &kp C   &kp D
-    &kp E    &kp F         &kp G   &kp H
+    &lt L_NAV A    &kp B         &kp C   &kp D
+    &kp E          &kp F         &kp G   &kp H
         >;
     };
 
     navigation_layer { // #define L_NAV 1
+      display-name = "Nav";
       bindings = <
     &kp A    &kp B         &kp C   &kp D
     &kp E    &kp F         &kp G   &kp H
