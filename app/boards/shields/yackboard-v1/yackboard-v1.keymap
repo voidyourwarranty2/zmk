@@ -328,7 +328,7 @@
       label = "M-BSPC";
       compatible = "zmk,behavior-macro";
       #binding-cells = <0>;
-      bindings = <&macro_press &kp ESC &kp BSPC>;
+      bindings = <&macro_press &kp LALT>, <&macro_tap &kp BSPC>, <&macro_release &kp LALT>;
     };
   };
 };
