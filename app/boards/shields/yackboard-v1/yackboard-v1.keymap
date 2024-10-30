@@ -83,7 +83,7 @@
       label = "HOLD_TAP_SHIFT";
       #binding-cells = <2>;
       flavor = "balanced";
-      tapping-term-ms = <280>;
+      tapping-term-ms = <200>;
       hold-while-undecided;
       bindings = <&kp>, <&sticky_shift>;
       retro-tap;
@@ -125,7 +125,7 @@
 //   i.e. it is possible to combine two modifiers on the same side of the key board and trigger a hold with
 //   a third tapped key on the other side without waiting.
 //
-// tapping-term-ms = <280>;
+// tapping-term-ms = <200>;
 //   In order to trigger a hold without pressing a second key or with pressing a key on the same side, this
 //   period needs to pass.
 //
@@ -142,7 +142,7 @@
       label = "MODIFIER_HOLD_TAP_L";
       #binding-cells = <2>;
       flavor = "balanced";
-      tapping-term-ms = <280>;
+      tapping-term-ms = <200>;
       quick-tap-ms = <175>;
       hold-trigger-key-positions = <POSITION_R POSITION_T>;
       hold-trigger-on-release;
@@ -153,7 +153,7 @@
       label = "MODIFIER_HOLD_TAP_R";
       #binding-cells = <2>;
       flavor = "balanced";
-      tapping-term-ms = <280>;
+      tapping-term-ms = <200>;
       quick-tap-ms = <175>;
       hold-trigger-key-positions = <POSITION_L POSITION_T>;
       hold-trigger-on-release;
@@ -164,7 +164,7 @@
       label = "MODIFIER_HOLD_TAP_A";
       #binding-cells = <2>;
       flavor = "balanced";
-      tapping-term-ms = <280>;
+      tapping-term-ms = <200>;
       quick-tap-ms = <175>;
       hold-trigger-key-positions = <POSITION_R POSITION_T>;
       hold-trigger-on-release;
@@ -175,7 +175,7 @@
       label = "MODIFIER_HOLD_TAP_U";
       #binding-cells = <2>;
       flavor = "balanced";
-      tapping-term-ms = <280>;
+      tapping-term-ms = <200>;
       quick-tap-ms = <175>;
       hold-trigger-key-positions = <POSITION_R POSITION_T>;
       hold-trigger-on-release;
@@ -186,7 +186,7 @@
       label = "MODIFIER_HOLD_TAP_N";
       #binding-cells = <2>;
       flavor = "balanced";
-      tapping-term-ms = <280>;
+      tapping-term-ms = <200>;
       quick-tap-ms = <175>;
       hold-trigger-key-positions = <POSITION_L POSITION_T>;
       hold-trigger-on-release;
@@ -197,7 +197,7 @@
       label = "LAYER_HOLD_TAP_L";
       #binding-cells = <2>;
       flavor = "balanced";
-      tapping-term-ms = <280>;
+      tapping-term-ms = <200>;
       quick-tap-ms = <175>;
       hold-trigger-key-positions = <POSITION_R POSITION_T>;
       hold-trigger-on-release;
@@ -208,7 +208,7 @@
       label = "LAYER_HOLD_TAP_R";
       #binding-cells = <2>;
       flavor = "balanced";
-      tapping-term-ms = <280>;
+      tapping-term-ms = <200>;
       quick-tap-ms = <175>;
       hold-trigger-key-positions = <POSITION_L POSITION_T>;
       hold-trigger-on-release;
@@ -219,7 +219,7 @@
       label = "LAYER_HOLD_TAPQ";
       #binding-cells = <2>;
       flavor = "balanced";
-      tapping-term-ms = <280>;
+      tapping-term-ms = <200>;
       quick-tap-ms = <175>;
       hold-trigger-key-positions = <POSITION_R POSITION_T>;
       hold-trigger-on-release;
@@ -233,7 +233,7 @@
       label = "LAYER_HOLD_TAPH";
       #binding-cells = <2>;
       flavor = "balanced";
-      tapping-term-ms = <280>;
+      tapping-term-ms = <200>;
       quick-tap-ms = <175>;
       hold-trigger-key-positions = <POSITION_R POSITION_T>;
       hold-trigger-on-release;
@@ -244,7 +244,7 @@
       label = "LAYER_HOLD_TAPG";
       #binding-cells = <2>;
       flavor = "balanced";
-      tapping-term-ms = <280>;
+      tapping-term-ms = <200>;
       quick-tap-ms = <175>;
       hold-trigger-key-positions = <POSITION_L POSITION_T>;
       hold-trigger-on-release;
@@ -255,7 +255,7 @@
       label = "LAYER_HOLD_TAPSS";
       #binding-cells = <2>;
       flavor = "balanced";
-      tapping-term-ms = <280>;
+      tapping-term-ms = <200>;
       quick-tap-ms = <175>;
       hold-trigger-key-positions = <POSITION_L POSITION_T>;
       hold-trigger-on-release;
@@ -619,7 +619,6 @@
       label = "QU_UPPERCASE";
       compatible = "zmk,behavior-macro";
       #binding-cells = <0>;
-      wait-ms = <150>;
       bindings = <&macro_tap &kp LS(Q) &kp U>;
     };
   };
