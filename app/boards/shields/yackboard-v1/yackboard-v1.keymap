@@ -294,25 +294,6 @@
   };
 };
 
-// On the navigation layer, there are two special keys that issue the Emacs commands for beginning and end of document.
-
-/ {
-  macros {
-    move_beg: meta_less_than {
-      label = "M-<";
-      compatible = "zmk,behavior-macro";
-      #binding-cells = <0>;
-      bindings = <&macro_tap &kp ESC &kp LESS_THAN>;
-    };
-    move_end: meta_greater_than {
-      label = "M->";
-      compatible = "zmk,behavior-macro";
-      #binding-cells = <0>;
-      bindings = <&macro_tap &kp ESC &kp GREATER_THAN>;
-    };
-  };
-};
-
 // On the backspace key, there are also functions to delete the subsequent or the previous word
 // by issuing the Emacs key combinations C-DEL or M-Backspace, respectively.
 
@@ -743,8 +724,8 @@
     navigation_layer { // #define L_NAV 1
       bindings = <
     &none             &none            &nd_grave    &ht_ang A LS(COMMA) &kp LS(DOT)     &kp EXCL       &mkp LCLK        &kp HOME       &kp UP        &kp PG_UP    &none          &none
-    &nd_caret         &nd_dqt          &nd_apos     &kp COMMA           &kp DOT         &kp QMARK      &mkp MCLK        &kp LEFT       &kp SLCK      &kp RIGHT    &move_beg      &kp INS
-    &ltt L_DEF L_FUN  &kp RA(LS(SEMI)) &kp RA(N9)   &kp SEMI            &kp COLON       &kp UNDER      &mkp RCLK        &kp END        &kp DOWN      &kp PG_DN    &move_end      &ltt L_DEF L_FUN
+    &nd_caret         &nd_dqt          &nd_apos     &kp COMMA           &kp DOT         &kp QMARK      &mkp MCLK        &kp LEFT       &kp SLCK      &kp RIGHT    &kp LC(HOME)   &kp INS
+    &ltt L_DEF L_FUN  &kp RA(LS(SEMI)) &kp RA(N9)   &kp SEMI            &kp COLON       &kp UNDER      &mkp RCLK        &kp END        &kp DOWN      &kp PG_DN    &kp LC(END)    &ltt L_DEF L_FUN
                       &trans           &trans       &trans              &trans          &trans         &trans           &trans         &trans        &trans       &none
       >;
     };
