@@ -78,3 +78,48 @@ nice_view_spi: &spi0 {
 &pro_micro_i2c {
     status = "disabled";
 };
+
+// ??? The following is experimental for the Cirque
+//
+// Cirque --> Nice!Nano
+// 1 SCK  --> D6 1.00
+// 2 MISO --> D4 0.22
+// 3 SS   --> D7 0.11
+// 4 DR   --> D8 1.04
+// 5 MOSI --> D5 0.24
+//
+
+&pinctrl {
+    spi1_default: spi1_default {
+        group1 {
+            psels = <NRF_PSEL(SPIM_SCK, 1, 00)>, // ProMicro GPIO 6 = Nice!Nano pin 1.00
+                <NRF_PSEL(SPIM_MOSI, 0, 24)>,	 // ProMicro GPIO 5 = Nice!Nano pin 0.24
+                <NRF_PSEL(SPIM_MISO, 0, 22)>;	 // ProMicro GPIO 4 = Nice!Nano pin 0.22
+        };
+    };
+    spi1_sleep: spi1_sleep {
+        group1 {
+            psels = <NRF_PSEL(SPIM_SCK, 1, 00)>, // ProMicro GPIO 6 = Nice!Nano pin 1.00
+                <NRF_PSEL(SPIM_MOSI, 0, 24)>,    // ProMicro GPIO 5 = Nice!Nano pin 0.24
+                <NRF_PSEL(SPIM_MISO, 0, 22)>;    // ProMicro GPIO 4 = Nice!Nano pin 0.22
+            low-power-enable;
+        };
+    };
+};
+
+cirque_spi: &spi1 {
+    compatible = "nordic,nrf-spim";
+    status = "okay";
+    pinctrl-0 = <&spi1_default>;
+    pinctrl-1 = <&spi1_sleep>;
+    pinctrl-names = "default", "sleep";
+    cs-gpios = <&pro_micro 7 GPIO_ACTIVE_LOW>;  // ProMicro GPIO 7 = Nice!Nano pin 0.11
+
+    trackpad@0 {
+      compatible = "cirque,pinnacle";
+      status = "okay";
+      reg = <0>;
+      spi-max-frequency = <10000000>;
+      dr-gpios = <&pro_micro 8 GPIO_ACTIVE_HIGH>; // ProMicro GPIO 8 = Nice!Nano pin 1.04
+    };
+};
