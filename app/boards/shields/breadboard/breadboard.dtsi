@@ -8,7 +8,7 @@
     zmk,kscan = &kscan0;
     zmk,matrix_transform = &default_transform;
     zephyr,console = &cdc_acm_uart;            // this is to allow USB debugging when the CONFIG_ZMK_USB_LOGGING=y is set in yackboard-v1_right.conf
-    zephyr,display = &nice_view;               // ??? experimental for the Nice!View
+    zephyr,display = &nice_view;               // for the Nice!View
   };
 
   default_transform: keymap_transform_0 {
@@ -45,9 +45,8 @@
   };
 };
 
-// ??? The following is experimental for the Nice!View
-// I took it from https://github.com/steffMorse/zmk-config-newage/blob/main/boards/shields/newage/newage.dtsi
-// and just changed the CS pin from GPIO 0 to GPIO 1 (which is where I have it on the breadboard)
+// The following is a common SPI interface for both the Nice!View and the Cirque Glidepoint
+// track pad.
 
 &pinctrl {
     spi0_default: spi0_default {
@@ -70,25 +69,26 @@
 };
 
 // The name 'nice_view_spi' is required for the 'nice_view' shield to find the SPI bus.
+
 nice_view_spi: &spi0 {
     compatible = "nordic,nrf-spim";
     pinctrl-0 = <&spi0_default>;
     pinctrl-1 = <&spi0_sleep>;
     pinctrl-names = "default", "sleep";
 
-    cs-gpios = <&pro_micro 1 GPIO_ACTIVE_HIGH>, // ProMicro GPIO 1 = Nice!Nano P0.06
-    	       <&pro_micro 0 GPIO_ACTIVE_LOW>;  // ProMicro GPIO 0 = Nice!Nano P0.08
+    cs-gpios = <&pro_micro 1 GPIO_ACTIVE_HIGH>, // ProMicro GPIO 1 = Nice!Nano P0.06 (chip select for the Nice!View)
+    	       <&pro_micro 0 GPIO_ACTIVE_LOW>;  // ProMicro GPIO 0 = Nice!Nano P0.08 (chip select for the Cirque)
 
     trackpad0: trackpad0@1 {
       compatible = "cirque,pinnacle";
       reg = <1>;                                    // index of the corresponding CS pin in the array cs-gpios
-      spi-max-frequency = <1000000>;
-      dr-gpios = <&pro_micro 5 (GPIO_ACTIVE_HIGH)>; // ProMicro GPIO 5 = Nice!Nano pin 0.24
+      spi-max-frequency = <10000000>;
+      dr-gpios = <&pro_micro 5 (GPIO_ACTIVE_HIGH)>; // ProMicro GPIO 5 = Nice!Nano pin 0.24 (data ready for the Cirque)
 
       sensitivity = "2x";
-      //sleep;
+      sleep;
       //no-taps;
-      // rotate-90;
+      //rotate-90;
     };
 };
 
@@ -111,14 +111,13 @@ nice_view_spi: &spi0 {
 //  5 MOSI --> GPIO 2 = P0.17
 // 11 GND  --> GND
 // 12 VCC  --> 3V3
-//
 
 / {
     cirque_listener {
       compatible = "zmk,input-listener";
       device = <&trackpad0>;
       // xy-swap;
-      y-invert;
+      //y-invert;
       // x-invert;
       scale-multiplier = <2>;
     };
