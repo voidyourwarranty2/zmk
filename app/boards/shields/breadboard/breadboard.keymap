@@ -21,7 +21,7 @@
     default_layer { // #define L_DEF 0
       display-name = "Base";
       bindings = <
-    &lt L_NAV A    &kp B         &kp C   &kp D
+    &lt L_NAV A    &kp B         &mkp LCLK   &kp D
     &kp E          &kp F         &kp G   &kp H
         >;
     };

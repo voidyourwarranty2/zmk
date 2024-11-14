@@ -52,74 +52,74 @@
 &pinctrl {
     spi0_default: spi0_default {
         group1 {
-            psels = <NRF_PSEL(SPIM_SCK, 0, 20)>,
-                <NRF_PSEL(SPIM_MOSI, 0, 17)>,
-                <NRF_PSEL(SPIM_MISO, 0, 25)>;
+            psels =
+	        <NRF_PSEL(SPIM_SCK,  0, 20)>, // ProMicro GPIO 3 = Nice!Nano P0.20
+                <NRF_PSEL(SPIM_MOSI, 0, 17)>, // ProMicro GPIO 2 = Nice!Nano P0.17
+                <NRF_PSEL(SPIM_MISO, 0, 22)>; // ProMicro GPIO 4 = Nice!Nano P0.22
         };
     };
     spi0_sleep: spi0_sleep {
         group1 {
-            psels = <NRF_PSEL(SPIM_SCK, 0, 20)>,
-                <NRF_PSEL(SPIM_MOSI, 0, 17)>,
-                <NRF_PSEL(SPIM_MISO, 0, 25)>;
+            psels =
+	        <NRF_PSEL(SPIM_SCK,  0, 20)>, // ProMicro GPIO 3 = Nice!Nano P0.20
+                <NRF_PSEL(SPIM_MOSI, 0, 17)>, // ProMicro GPIO 2 = Nice!Nano P0.17
+                <NRF_PSEL(SPIM_MISO, 0, 22)>; // ProMicro GPIO 4 = Nice!Nano P0.22
             low-power-enable;
         };
     };
 };
 
+// The name 'nice_view_spi' is required for the 'nice_view' shield to find the SPI bus.
 nice_view_spi: &spi0 {
     compatible = "nordic,nrf-spim";
     pinctrl-0 = <&spi0_default>;
     pinctrl-1 = <&spi0_sleep>;
     pinctrl-names = "default", "sleep";
-    cs-gpios = <&pro_micro 1 GPIO_ACTIVE_HIGH>;
-};
 
-&pro_micro_i2c {
-    status = "disabled";
-};
+    cs-gpios = <&pro_micro 1 GPIO_ACTIVE_HIGH>, // ProMicro GPIO 1 = Nice!Nano P0.06
+    	       <&pro_micro 0 GPIO_ACTIVE_LOW>;  // ProMicro GPIO 0 = Nice!Nano P0.08
 
-// ??? The following is experimental for the Cirque
-//
-// Cirque --> Nice!Nano
-// 1 SCK  --> D6 1.00
-// 2 MISO --> D4 0.22
-// 3 SS   --> D7 0.11
-// 4 DR   --> D8 1.04
-// 5 MOSI --> D5 0.24
-//
-
-&pinctrl {
-    spi1_default: spi1_default {
-        group1 {
-            psels = <NRF_PSEL(SPIM_SCK, 1, 00)>, // ProMicro GPIO 6 = Nice!Nano pin 1.00
-                <NRF_PSEL(SPIM_MOSI, 0, 24)>,	 // ProMicro GPIO 5 = Nice!Nano pin 0.24
-                <NRF_PSEL(SPIM_MISO, 0, 22)>;	 // ProMicro GPIO 4 = Nice!Nano pin 0.22
-        };
-    };
-    spi1_sleep: spi1_sleep {
-        group1 {
-            psels = <NRF_PSEL(SPIM_SCK, 1, 00)>, // ProMicro GPIO 6 = Nice!Nano pin 1.00
-                <NRF_PSEL(SPIM_MOSI, 0, 24)>,    // ProMicro GPIO 5 = Nice!Nano pin 0.24
-                <NRF_PSEL(SPIM_MISO, 0, 22)>;    // ProMicro GPIO 4 = Nice!Nano pin 0.22
-            low-power-enable;
-        };
-    };
-};
-
-cirque_spi: &spi1 {
-    compatible = "nordic,nrf-spim";
-    status = "okay";
-    pinctrl-0 = <&spi1_default>;
-    pinctrl-1 = <&spi1_sleep>;
-    pinctrl-names = "default", "sleep";
-    cs-gpios = <&pro_micro 7 GPIO_ACTIVE_LOW>;  // ProMicro GPIO 7 = Nice!Nano pin 0.11
-
-    trackpad@0 {
+    trackpad0: trackpad0@1 {
       compatible = "cirque,pinnacle";
-      status = "okay";
-      reg = <0>;
-      spi-max-frequency = <10000000>;
-      dr-gpios = <&pro_micro 8 GPIO_ACTIVE_HIGH>; // ProMicro GPIO 8 = Nice!Nano pin 1.04
+      reg = <1>;                                    // index of the corresponding CS pin in the array cs-gpios
+      spi-max-frequency = <1000000>;
+      dr-gpios = <&pro_micro 5 (GPIO_ACTIVE_HIGH)>; // ProMicro GPIO 5 = Nice!Nano pin 0.24
+
+      sensitivity = "2x";
+      //sleep;
+      //no-taps;
+      // rotate-90;
+    };
+};
+
+// The Nice!View is connected as follows:
+//
+// Nice!View --> Nice!Nano v2
+//  1 CS     --> GPIO 1 = P0.06
+//  2 GND    --> GND
+//  3 VCC    --> 3V3
+//  4 SCK    --> GPIO 3 = P0.20
+//  5 MOSI   --> GPIO 2 = P0.17
+//
+// The Cirque Track Pad is connected as follows:
+//
+// Cirque  --> Nice!Nano v2
+//  1 SCK  --> GPIO 3 = P0.20
+//  2 MISO --> GPIO 4 = P0.22
+//  3 SS   --> GPIO 0 = P0.08
+//  4 DR   --> GPIO 5 = P0.24
+//  5 MOSI --> GPIO 2 = P0.17
+// 11 GND  --> GND
+// 12 VCC  --> 3V3
+//
+
+/ {
+    cirque_listener {
+      compatible = "zmk,input-listener";
+      device = <&trackpad0>;
+      // xy-swap;
+      y-invert;
+      // x-invert;
+      scale-multiplier = <2>;
     };
 };
