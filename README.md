@@ -6,7 +6,10 @@ This is an inofficial fork of [ZMK](https://github.com/zmkfirmware/zmk/). This m
 
 * `devel-retrotap`: Nick Conway's [retrotap behavior](https://github.com/nickconway/zmk/tree/retro-tap-binding) patch, rebased to the current main.
 
-* `devel-yackboard`: the above patches and the definition of my personal key board, the [Yackboard v1](https://gitlab.com/voidyourwarranty/yackboard).
+* `devel-pointing`: [PR 2027](https://github.com/zmkfirmware/zmk/pull/2027), rebased to the current main.
+
+* `devel-yackboard`: the antecedent morph and retrotap behavior patches and the definition of my personal key board, the
+  [Yackboard v1](https://gitlab.com/voidyourwarranty/yackboard).
 
 The following is the original README.
 
