@@ -87,7 +87,7 @@ nice_view_spi: &spi0 {
 
       sensitivity = "2x";
       sleep;
-      //no-taps;
+      no-taps;
       //rotate-90;
     };
 };
@@ -117,8 +117,8 @@ nice_view_spi: &spi0 {
       compatible = "zmk,input-listener";
       device = <&trackpad0>;
       // xy-swap;
-      //y-invert;
-      // x-invert;
-      scale-multiplier = <2>;
+      y-invert;
+      //x-invert;
+      scale-multiplier = <4>;
     };
 };
