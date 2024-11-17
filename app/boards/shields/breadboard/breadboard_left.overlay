@@ -6,3 +6,15 @@
     , <&pro_micro 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
     ;
 };
+
+/ {
+  trackpad1: virtual_input {
+    compatible = "zmk,virtual-input";
+  };
+
+  input_relay_config_102 {
+    compatible = "zmk,split-peripheral-input-relay";
+    relay-channel = <102>;
+    device = <&trackpad1>;
+  };
+};

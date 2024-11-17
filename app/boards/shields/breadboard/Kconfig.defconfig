@@ -1,4 +1,4 @@
-if SHIELD_BREADBOARD_RIGHT
+if SHIELD_BREADBOARD_LEFT
 
 config ZMK_KEYBOARD_NAME
   default "Breadboard"
