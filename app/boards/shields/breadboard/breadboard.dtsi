@@ -108,7 +108,7 @@ nice_view_spi: &spi0 {
       spi-max-frequency = <10000000>;
       dr-gpios = <&pro_micro 5 GPIO_ACTIVE_HIGH>; // ProMicro GPIO 5 = Nice!Nano pin 0.24 (data ready for the Cirque)
 
-      sensitivity = "2x";
+      sensitivity = "1x";
       sleep;
       no-taps;
       //rotate-90;
@@ -122,7 +122,7 @@ nice_view_spi: &spi0 {
       // xy-swap;
       y-invert;
       //x-invert;
-      scale-multiplier = <4>;
+      scale-multiplier = <6>;
     };
 
     cirque_listener_right {
@@ -131,6 +131,6 @@ nice_view_spi: &spi0 {
       // xy-swap;
       y-invert;
       //x-invert;
-      scale-multiplier = <4>;
+      scale-multiplier = <6>;
     };
 };

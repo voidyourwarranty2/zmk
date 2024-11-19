@@ -1,4 +1,5 @@
 #include "breadboard.dtsi" // Notice that the main dtsi files are included in the overlay.
+#include <dt-bindings/zmk/mouse.h>   // This is required when using &mkp mouse key events.
 
 &kscan0 { // These are the column numbers of the Yackboard (diodes from row to column)
   col-gpios
@@ -16,5 +17,15 @@
     compatible = "zmk,split-peripheral-input-relay";
     relay-channel = <102>;
     device = <&trackpad1>;
+  };
+};
+
+// ??? experimental config of mouse move keys
+/ {
+  behaviors {
+    mmv: mouse_move {
+      time-to-max-speed-ms = <1000>;
+      acceleration-exponent = <1>;
+    };
   };
 };
